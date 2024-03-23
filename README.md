@@ -3,7 +3,8 @@ title: "Proposition - 120 years of olympic history"
 author: "IF36 - Race (Mohamed Amine Jabote, Thomas Francois, Freddy durel Pouna Wantou)"
 date: "UTT - Semestre P24"
 
-output:
+Image:
+    ![](https://st.depositphotos.com/2793427/4712/i/450/depositphotos_47122635-stock-photo-white-olympics-flag-against-the.jpg)
   
 ---
 
