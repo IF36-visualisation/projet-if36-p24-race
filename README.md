@@ -4,9 +4,7 @@ author: "IF36 - Race (Mohamed Amine Jabote, Thomas Francois, Freddy durel Pouna 
 date: "UTT - Semestre P24"
 
 output:
-  rmdformats::material:
-    thumbnails: false
-    gallery: true
+  
 ---
 
 # Introduction
