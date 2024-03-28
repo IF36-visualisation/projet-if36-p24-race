@@ -32,23 +32,23 @@ Le tableau ci-dessous offre une description détaillée de chaque attribut, y co
 <br>
 <div width="100%" align="center">
 
-| Attribut   | Description                  | Type     |
-|------------|------------------------------|----------|
-| **ID**         | Identifiant unique de l'athlète        | Numérique|
-| **Name**       | Nom de l'athlète                | Texte    |
-| **Sexe**       | Sexe de l'athlète ***(homme ou femme)***            | Texte    |
-| **Age**        | Âge de l'athlète lors des Jeux olympiques              | Numérique|
-| **Height**     | Taille de l'athlète en centimètres          | Numérique|
-| **Weight**     | Poids de l'athlète en kilogrammes           | Numérique|
-| **Team**       | Nationalité de l'équipe de l'athlète           | Texte    |
-| **NOC**        | Abréviation du Comité national olympique de l'équipe          | Texte    |
-| **Games**      | Nom de l'édition des Jeux olympiques          | Texte    |
-| **Year**       | Année de l'édition des Jeux olympiques        | Texte    |
-| **Season**     | Saison des Jeux olympiques ***(été ou hiver)***     | Texte    |
-| **City**       | Ville hôte des Jeux olympiques        | Texte    |
-| **Sport**      | Sport pratiqué par l'athlète          | Texte    |
-| **Event**      | Événement sportif dans lequel l'athlète a participé   | Texte    |
-| **Medal**      | Type de médaille remportée par l'athlète ***(or, argent, bronze ou aucune)*** | Texte    |
+| Attribut   | Description                  | Type     | format | Catégorie |
+|------------|------------------------------|----------|-----------|-----------|
+| **ID**         | Identifiant unique de l'athlète        | Texte | String | Nominal |
+| **Name**       | Nom de l'athlète                | Texte    | String | Nominal |
+| **Sexe**       | Sexe de l'athlète ***(homme ou femme)***            | Texte    | String | Nominal |
+| **Age**        | Âge de l'athlète lors des Jeux olympiques              | Numérique| Integer | Continu|
+| **Height**     | Taille de l'athlète en centimètres          | Numérique| Integer | Continu |
+| **Weight**     | Poids de l'athlète en kilogrammes           | Numérique| Float | Continu |
+| **Team**       | Nationalité de l'équipe de l'athlète           | Texte    | String | String | nominal|
+| **NOC**        | Abréviation du Comité national olympique de l'équipe          | Texte    | String | nominal|
+| **Games**      | Nom de l'édition des Jeux olympiques          | Texte    |  String | nominal|
+| **Year**       | Année de l'édition des Jeux olympiques        | Texte    | YYYY | Discret |
+| **Season**     | Saison des Jeux olympiques ***(été ou hiver)***     | Texte    | String| ordinal |
+| **City**       | Ville hôte des Jeux olympiques        | Texte    | String | nominal |
+| **Sport**      | Sport pratiqué par l'athlète          | Texte    | String | nominal |
+| **Event**      | Événement sportif dans lequel l'athlète a participé   | Texte    | String | nominal |
+| **Medal**      | Type de médaille remportée par l'athlète ***(or, argent, bronze ou aucune)*** | Texte    | String | 
 </div>
 </br>
 
