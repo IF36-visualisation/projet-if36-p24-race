@@ -32,7 +32,7 @@ Le tableau ci-dessous offre une description détaillée de chaque attribut, y co
 <br>
 <div width="100%" align="center">
 
-| Attribut   | Description                  | Type     | format | Catégorie |
+| Attribut   | Description                  | Type     | Format | Catégorie |
 |------------|------------------------------|----------|-----------|-----------|
 | **ID**         | Identifiant unique de l'athlète        | Texte | String | Nominal |
 | **Name**       | Nom de l'athlète                | Texte    | String | Nominal |
@@ -57,25 +57,26 @@ Nous avons compilé une série de questions que nous tenterons de résoudre en u
 
 #### L'évolution des Jeux Olympiques
 1. Quels pays ont exercé une domination dans l'histoire des Jeux Olympiques ?  
-   *Description*
+   > *Description*
 3. Comment les Jeux Olympiques d'été se différencient-ils aux Jeux Olympiques d'hiver ?  
-   *Description*
+   > Cette question examine comment les Jeux Olympiques d'été se différencient des Jeux Olympiques d'hiver en termes de sports pratiqués, de nombre d'épreuves , de participants, et d'autres aspects. Elle met en évidence les distinctions entre les deux versions du même évènement.
 4. Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?  
-   *Description*
+   > *Description*
 5. Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?  
-   *Description*
-6. Existe-t-il une relation entre le niveau socio-économique d'un pays et ses performances aux Jeux Olympiques ? (Utiliser le PIB/h)  
-   *Description*
+   > *Description*
+6. Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?
+   > Il est intéressant d'explorer si le niveau économique d'un pays, mesuré par le PIB par habitant, influence ses performances aux Jeux Olympiques. Cette analyse nous aide à voir comment l'argent et les ressources affectent les succès sportifs à travers les nations.  
+   > Nous utilisons une [basse de donnée](https://databank.worldbank.org/indicator/NY.GDP.PCAP.CD/1ff4a498/Popular-Indicators#) du PIB/habitant par pays depuis 1960 créée par [La Banque Mondiale](https://www.worldbank.org/en/home).
 
 #### Les athlètes
 6. Quels sont les athlètes qui ont marqué les jeux olympiques ?  
-   *Description*
+   > *Description*
 7. Quels sont les impacts des caractéristiques physiques sur les résultats ?  
-   *Description*
+   > *Description*
 8. Est-ce que la répartition des médailles entre hommes et femmes varie selon les pays ?  
-   *Description*
+   > *Description*
 9. Comment la représentation des femmes aux Jeux Olympiques a-t-elle évolué au fil du temps ?  
-   *Description*
+   > *Description*
 
 
 
