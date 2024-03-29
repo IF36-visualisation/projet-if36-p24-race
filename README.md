@@ -61,7 +61,7 @@ Nous avons compilé une série de questions que nous tenterons de résoudre en u
 3. Comment les Jeux Olympiques d'été se différencient-ils aux Jeux Olympiques d'hiver ?  
    > Cette question examine comment les Jeux Olympiques d'été se différencient des Jeux Olympiques d'hiver en termes de sports pratiqués, de nombre d'épreuves , de participants, et d'autres aspects. Elle met en évidence les distinctions entre les deux versions du même évènement.
 4. Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?  
-   > *Description*
+   > L'objectif ici est de déterminer quelles sont les disciplines qui ont été ajoutées ou supprimées au cours de l'évolution des jeux. Aussi elle  a pour objectif de suivre l'évolution du nombre d'athlètes, de déterminer les pays qui ont rejoins la compétition 
 5. Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?  
    > *Description*
 6. Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?
