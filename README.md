@@ -57,7 +57,7 @@ Nous avons compilé une série de questions que nous tenterons de résoudre en u
 
 #### L'évolution des Jeux Olympiques
 1. Quels pays ont exercé une domination dans l'histoire des Jeux Olympiques ?  
-   > *Description*
+   > Dans cette analyse, nous chercherons à identifier les pays qui ont accumulé le plus grand nombre de médailles dans l'histoire des Jeux Olympiques, qu'elles soient en or, argent ou bronze, ainsi que le total de ces médailles. De plus, nous déterminerons pour chaque discipline quel pays a remporté le plus de médailles.
 3. Comment les Jeux Olympiques d'été se différencient-ils aux Jeux Olympiques d'hiver ?  
    > Cette question examine comment les Jeux Olympiques d'été se différencient des Jeux Olympiques d'hiver en termes de sports pratiqués, de nombre d'épreuves , de participants, et d'autres aspects. Elle met en évidence les distinctions entre les deux versions du même évènement.
 4. Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?  
