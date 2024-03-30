@@ -53,84 +53,62 @@ Le tableau ci-dessous offre une description détaillée de chaque attribut, y co
 </br>
 
 ## Plan d'analyse
-Nous avons compilé une série de questions que nous tenterons de résoudre en utilisant le jeu de données. Ces questions sont divisées en deux catégories principales : l'évolution des Jeux Olympiques et les performances des athlètes.
+Nous avons compilé une série de questions que nous tenterons de résoudre en utilisant le jeu de données. Pour chaques question, nous avons une liste d'examples de visualisations possibles. Ces questions sont divisées en deux catégories principales : l'évolution des Jeux Olympiques et les performances des athlètes. 
 
 #### L'évolution des Jeux Olympiques
 1. Quels pays ont exercé une domination dans l'histoire des Jeux Olympiques ?  
-   > Dans cette analyse, nous chercherons à identifier les pays qui ont accumulé le plus grand nombre de médailles dans l'histoire des Jeux Olympiques, qu'elles soient en or, argent ou bronze, ainsi que le total de ces médailles. De plus, nous déterminerons pour chaque discipline quel pays a remporté le plus de médailles.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li> <b>Graphique à barres des meilleurs pays par médailles :</b> pour comparer directement les performances des pays les plus réussis. Il permet une comparaison claire et rapide des totaux de médailles entre les principaux pays, ce qui est utile pour identifier les leaders incontestés et les écarts significatifs entre eux.</li>
-    	<li><b>Diagramme circulaire ou camembert des médailles par type :</b> pour illustrer la répartition des médailles par type pour chaque pays. Il offre une vue d'ensemble instantanée des performances relatives en or, argent et bronze, permettant de déterminer si un pays a une domination particulière dans une catégorie de médailles.</li>
-    	<li><b>courbe présentant l'évolution du nombre total de médailles sur les 150 dernières années pour les pays dominants:</b> permet d'identifier les périodes de domination ou de déclin, ainsi que les évolutions à long terme des performances olympiques des pays.</li>
-    </ul>
+   > Dans cette analyse, nous chercherons à identifier les pays qui ont accumulé le plus grand nombre de médailles dans l'histoire des Jeux Olympiques, qu'elles soient en or, argent ou bronze, ainsi que le total de ces médailles. De plus, nous déterminerons pour chaque discipline quel pays a remporté le plus de médailles.  
+    > - **Graphique à barres des meilleurs pays par médailles :** pour comparer directement les performances des pays les plus réussis. Il permet une comparaison claire et rapide des totaux de médailles entre les principaux pays, ce qui est utile pour identifier les leaders incontestés et les écarts significatifs entre eux.
+    > - **Diagramme circulaire ou camembert des médailles par type :** pour illustrer la répartition des médailles par type pour chaque pays. Il offre une vue d'ensemble instantanée des performances relatives en or, argent et bronze, permettant de déterminer si un pays a une domination particulière dans une catégorie de médailles.
+    > - **Courbe présentant l'évolution du nombre total de médailles sur les 150 dernières années pour les pays dominants :** permet d'identifier les périodes de domination ou de déclin, ainsi que les évolutions à long terme des performances olympiques des pays.
+    
 2. Comment les Jeux Olympiques d'été se différencient-ils aux Jeux Olympiques d'hiver ?
-   > Cette question examine comment les Jeux Olympiques d'été se différencient des Jeux Olympiques d'hiver en termes de sports pratiqués, de nombre d'épreuves , de participants, et d'autres aspects. Elle met en évidence les distinctions entre les deux versions du même évènement.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en barres du nombre d'épreuves :</b> graphique en barres comparant le nombre total d'épreuves aux Jeux Olympiques d'été et d'hiver au fil du temps. Cela permet de visualiser les variations dans la taille et la complexité des deux événements au fil des ans.</li>
-    	<li><b>Diagramme circulaire des participants :</b> Un diagramme circulaire montrant la répartition des participants par région ou pays aux Jeux Olympiques d'été et d'hiver. Cela permet de comparer la diversité géographique des participants entre les deux événements.</li>
-    	<li><b>Graphique en barres empilées des médailles par pays :</b> Un graphique en barres empilées comparant les médailles remportées par chaque pays aux Jeux Olympiques d'été et d'hiver. Cette visualisation met en évidence les performances des pays dans les deux types de jeux et permet de déterminer s'il existe des différences significatives dans les pays dominant chaque événement.</li>
-    </ul>
+   > Cette question examine comment les Jeux Olympiques d'été se différencient des Jeux Olympiques d'hiver en termes de sports pratiqués, de nombre d'épreuves , de participants, et d'autres aspects. Elle met en évidence les distinctions entre les deux versions du même évènement.  
+     > - **Graphique en barres du nombre d'épreuves :** graphique en barres comparant le nombre total d'épreuves aux Jeux Olympiques d'été et d'hiver au fil du temps. Cela permet de visualiser les variations dans la taille et la complexité des deux événements au fil des ans.
+     > - **Diagramme circulaire des participants :** Un diagramme circulaire montrant la répartition des participants par région ou pays aux Jeux Olympiques d'été et d'hiver. Cela permet de comparer la diversité géographique des participants entre les deux événements.
+     > - **Graphique en barres empilées des médailles par pays :** Un graphique en barres empilées comparant les médailles remportées par chaque pays aux Jeux Olympiques d'été et d'hiver. Cette visualisation met en évidence les performances des pays dans les deux types de jeux et permet de déterminer s'il existe des différences significatives dans les pays dominant chaque événement.
+    
 3. Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?  
-   > L'objectif ici est de déterminer quels sont les sports qui ont été intégrés au cours des années et à quel moment ceux ci se sont intégrés. Ceci aussi a pour visée de déterminer la raison de l'ajout de ces disciplines(popularité grandissante ou juste nouveau sport). Dans un second temps il s'agira d'identifier ou non l'entrée en liste de nouveaux pays participants dans les jeux. D'en déterminer les origines(première qualification ou alors accueil de nouveaux pays admissibles). Enfin il s'agit de déterminer comment évolue le nombre d'athlètes participant aux jeux au fil des années.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en ligne du nombre d'athlètes par année :</b> Un graphique en ligne représentant l'évolution du nombre total d'athlètes participant aux Jeux Olympiques au fil des ans. Cette visualisation mettrait en évidence les variations dans la taille de la délégation olympique mondiale au fil du temps.</li>
-    	<li><b>Graphique en barres du nombre d'épreuves par discipline sportive :</b> Un graphique en barres montrant le nombre d'épreuves par discipline sportive (par exemple, course, lancer, saut pour l'athlétisme) aux Jeux Olympiques au fil du temps. Cela offre une vue détaillée des changements dans la composition et la diversité des épreuves sportives au fil des ans.</li>
-    </ul>
+   > L'objectif ici est de déterminer quels sont les sports qui ont été intégrés au cours des années et à quel moment ceux ci se sont intégrés. Ceci aussi a pour visée de déterminer la raison de l'ajout de ces disciplines(popularité grandissante ou juste nouveau sport). Dans un second temps il s'agira d'identifier ou non l'entrée en liste de nouveaux pays participants dans les jeux. D'en déterminer les origines(première qualification ou alors accueil de nouveaux pays admissibles). Enfin il s'agit de déterminer comment évolue le nombre d'athlètes participant aux jeux au fil des années.  
+	> - **Graphique en ligne du nombre d'athlètes par année :** Un graphique en ligne représentant l'évolution du nombre total d'athlètes participant aux Jeux Olympiques au fil des ans. Cette visualisation mettrait en évidence les variations dans la taille de la délégation olympique mondiale au fil du temps.
+   	> - **Graphique en barres du nombre d'épreuves par discipline sportive :** Un graphique en barres montrant le nombre d'épreuves par discipline sportive (par exemple, course, lancer, saut pour l'athlétisme) aux Jeux Olympiques au fil du temps. Cela offre une vue détaillée des changements dans la composition et la diversité des épreuves sportives au fil des ans.
+    
 4. Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?  
-   > Cette question vise à déterminer si le pays hôte des Jeux Olympiques bénéficie d'un avantage en termes de participation et de performances sportives, telles que le nombre de médailles accumulées, par rapport aux autres nations participantes. L'objectif est d'analyser si le fait d'accueillir les Jeux Olympiques donne un élan supplémentaire aux athlètes du pays hôte, leur permettant de performer au-dessus de la moyenne par rapport à leurs performances habituelles.<br>
-    __Visualisation possibles :__
-   <ul>
-	<li><b>Graphique en barres du nombre de médailles par pays :</b> Un graphique en barres comparant le nombre total de médailles remportées par le pays hôte par rapport aux autres nations participantes. Cela permettrait de voir visuellement si le pays hôte obtient plus de médailles que la moyenne des autres pays.</li>
-    	<li><b>Graphique en barres empilées des médailles par type pour le pays hôte et les autres nations :</b> Un graphique en barres empilées montrant la répartition des médailles d'or, d'argent et de bronze remportées par le pays hôte et les autres nations participantes. Cette visualisation permettrait de comparer les performances dans chaque catégorie de médailles.</li>
-    	<li><b>Nuage de points des performances par rapport à la moyenne :</b> Un nuage de points avec le pays hôte et les autres nations sur l'axe des x et le nombre total de médailles sur l'axe des y. Chaque point représenterait une édition des Jeux Olympiques, et sa position par rapport à une ligne moyenne permettrait de visualiser si le pays hôte surperforme ou sous-performe par rapport à la moyenne des autres nations.</li>
-   </ul>
+   > Cette question vise à déterminer si le pays hôte des Jeux Olympiques bénéficie d'un avantage en termes de participation et de performances sportives, telles que le nombre de médailles accumulées, par rapport aux autres nations participantes. L'objectif est d'analyser si le fait d'accueillir les Jeux Olympiques donne un élan supplémentaire aux athlètes du pays hôte, leur permettant de performer au-dessus de la moyenne par rapport à leurs performances habituelles.  
+	> - **Graphique en barres du nombre de médailles par pays :** Un graphique en barres comparant le nombre total de médailles remportées par le pays hôte par rapport aux autres nations participantes. Cela permettrait de voir visuellement si le pays hôte obtient plus de médailles que la moyenne des autres pays.
+ 	> - **Graphique en barres empilées des médailles par type pour le pays hôte et les autres nations :** Un graphique en barres empilées montrant la répartition des médailles d'or, d'argent et de bronze remportées par le pays hôte et les autres nations participantes. Cette visualisation permettrait de comparer les performances dans chaque catégorie de médailles.
+	> - **Nuage de points des performances par rapport à la moyenne :** Un nuage de points avec le pays hôte et les autres nations sur l'axe des x et le nombre total de médailles sur l'axe des y. Chaque point représenterait une édition des Jeux Olympiques, et sa position par rapport à une ligne moyenne permettrait de visualiser si le pays hôte surperforme ou sous-performe par rapport à la moyenne des autres nations.
+   
 5. Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?
    > Il est intéressant d'explorer si le niveau économique d'un pays, mesuré par le PIB par habitant, influence ses performances aux Jeux Olympiques. Cette analyse nous aide à voir comment l'argent et les ressources affectent les succès sportifs à travers les nations.  
-   > Nous utilisons une [base de donnée](https://databank.worldbank.org/indicator/NY.GDP.PCAP.CD/1ff4a498/Popular-Indicators#) du PIB/habitant par pays depuis 1960 créée par [La Banque Mondiale](https://www.worldbank.org/en/home).<br>
-     __Visualisation possibles :__
-    <ul>
-	<li><b>Nuage de points du PIB par habitant par rapport au nombre de médailles :</b> Un nuage de points avec le PIB par habitant sur l'axe des x et le nombre total de médailles remportées sur l'axe des y pour chaque pays participant aux Jeux Olympiques. Chaque point représente un pays pour une année donnée, permettant de visualiser s'il existe une corrélation entre la richesse économique d'un pays et son succès aux Jeux Olympiques.</li>
-    	<li><b>Graphique en ligne de l'évolution du PIB par habitant et du nombre de médailles :</b> Un graphique en ligne avec le PIB par habitant et le nombre total de médailles remportées pour chaque année olympique. Cette visualisation permettrait d'observer comment l'évolution du niveau économique d'un pays au fil du temps est liée à ses performances aux Jeux Olympiques.</li>
-    </ul>
+   > Nous utilisons une [base de donnée](https://databank.worldbank.org/indicator/NY.GDP.PCAP.CD/1ff4a498/Popular-Indicators#) du PIB/habitant par pays depuis 1960 créée par [La Banque Mondiale](https://www.worldbank.org/en/home).  
+	> - **Nuage de points du PIB par habitant par rapport au nombre de médailles :** Un nuage de points avec le PIB par habitant sur l'axe des x et le nombre total de médailles remportées sur l'axe des y pour chaque pays participant aux Jeux Olympiques. Chaque point représente un pays pour une année donnée, permettant de visualiser s'il existe une corrélation entre la richesse économique d'un pays et son succès aux Jeux Olympiques.
+	> - **Graphique en ligne de l'évolution du PIB par habitant et du nombre de médailles :** Un graphique en ligne avec le PIB par habitant et le nombre total de médailles remportées pour chaque année olympique. Cette visualisation permettrait d'observer comment l'évolution du niveau économique d'un pays au fil du temps est liée à ses performances aux Jeux Olympiques.
+    
 
 #### Les athlètes
 6. Quels sont les athlètes qui ont marqué les jeux olympiques ?  
-   > *Description*
-   > Cette question cherche à identifier les athlètes qui ont marqué les Jeux Olympiques par leurs performances exceptionnelles. L'objectif est d'analyser les données historiques des Jeux Olympiques pour identifier les athlètes les plus médaillés, les records établis et les moments marquants de l'histoire des Jeux.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en barres des athlètes les plus médaillés :</b> n graphique en barres montrant les athlètes ayant remporté le plus grand nombre de médailles olympiques, classés par discipline sportive ou nombre total de médailles. Cette visualisation permettrait d'identifier les athlètes les plus titrés de l'histoire des Jeux Olympiques.</li>
-    	<li><b>Graphique en nuage de points des records battus au fil du temps :</b> Un graphique en nuage de points représentant les records olympiques battus au fil des éditions des Jeux Olympiques. Chaque point représenterait un record battu dans une discipline sportive spécifique, avec l'année sur l'axe des x et la performance réalisée sur l'axe des y. Cette visualisation permettrait de visualiser les tendances et les progrès réalisés dans différentes disciplines au fil du temps.</li>
-    </ul>
+   > Cette question cherche à identifier les athlètes qui ont marqué les Jeux Olympiques par leurs performances exceptionnelles. L'objectif est d'analyser les données historiques des Jeux Olympiques pour identifier les athlètes les plus médaillés, les records établis et les moments marquants de l'histoire des Jeux.
+	> - **Graphique en barres des athlètes les plus médaillés :** n graphique en barres montrant les athlètes ayant remporté le plus grand nombre de médailles olympiques, classés par discipline sportive ou nombre total de médailles. Cette visualisation permettrait d'identifier les athlètes les plus titrés de l'histoire des Jeux Olympiques.
+	> - **Graphique en nuage de points des records battus au fil du temps :** Un graphique en nuage de points représentant les records olympiques battus au fil des éditions des Jeux Olympiques. Chaque point représenterait un record battu dans une discipline sportive spécifique, avec l'année sur l'axe des x et la performance réalisée sur l'axe des y. Cette visualisation permettrait de visualiser les tendances et les progrès réalisés dans différentes disciplines au fil du temps.
+    
 7. Quels sont les impacts des caractéristiques physiques sur les résultats ?  
-   > *Description*
    > Cette question vise à explorer les impacts des caractéristiques physiques des athlètes sur leurs performances aux Jeux Olympiques. L'objectif est d'analyser comment des facteurs tels que la taille, le poids, l'âge et d'autres caractéristiques physiques peuvent influencer les résultats sportifs.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en nuage de points de la taille et du poids des médaillés :</b> Un graphique en nuage de points représentant la relation entre la taille et le poids des athlètes médaillés dans différentes disciplines sportives. Cela permettrait d'identifier s'il existe des tendances générales entre les caractéristiques physiques des athlètes et leurs performances.</li>
-    	<li><b>Graphique en barres des médailles par tranche d'âge :</b> Un graphique en barres montrant la répartition des médailles par tranche d'âge des athlètes. Cela permettrait d'analyser si les performances sportives varient en fonction de l'âge des athlètes et s'il existe des différences significatives entre les groupes d'âge.</li>
-    	<li><b>Analyse de corrélation entre les caractéristiques physiques et les performances (Nuage) :</b> Une analyse statistique explorant les corrélations entre les caractéristiques physiques telles que la taille, le poids, l'âge, etc., et les performances sportives des athlètes. Cette analyse pourrait mettre en évidence les facteurs physiques qui ont le plus d'impact sur les résultats sportifs aux Jeux Olympiques.</li>
-    </ul>
+	> - **Graphique en nuage de points de la taille et du poids des médaillés :** Un graphique en nuage de points représentant la relation entre la taille et le poids des athlètes médaillés dans différentes disciplines sportives. Cela permettrait d'identifier s'il existe des tendances générales entre les caractéristiques physiques des athlètes et leurs performances.
+	> - **Graphique en barres des médailles par tranche d'âge :** Un graphique en barres montrant la répartition des médailles par tranche d'âge des athlètes. Cela permettrait d'analyser si les performances sportives varient en fonction de l'âge des athlètes et s'il existe des différences significatives entre les groupes d'âge.
+	> - **Analyse de corrélation entre les caractéristiques physiques et les performances (Nuage) :** Une analyse statistique explorant les corrélations entre les caractéristiques physiques telles que la taille, le poids, l'âge, etc., et les performances sportives des athlètes. Cette analyse pourrait mettre en évidence les facteurs physiques qui ont le plus d'impact sur les résultats sportifs aux Jeux Olympiques.
+    
 8. Est-ce que la répartition des médailles entre hommes et femmes varie selon les pays ?  
-   > *Description*
    > Cette question vise à examiner si la répartition des médailles entre hommes et femmes varie d'un pays à l'autre aux Jeux Olympiques. L'objectif est d'analyser les différences de performances entre les athlètes masculins et féminins dans différentes nations participantes.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en barres de la répartition des médailles par genre pour chaque pays :</b> Un graphique en barres comparant le nombre total de médailles remportées par les athlètes masculins et féminins pour chaque pays participant. Cela permettrait de visualiser visuellement les différences de performances entre hommes et femmes dans différents pays.</li>
-    	<li><b>Graphique en secteurs ou camembert de la répartition des médailles par genre :</b> Un graphique en secteurs montrant la répartition des médailles entre hommes et femmes pour l'ensemble des Jeux Olympiques. Cela pourrait révéler la proportion relative de médailles remportées par chaque genre et mettre en évidence les pays où les performances des femmes sont les plus ou les moins représentées.</li>
-    </ul>
+	> - **Graphique en barres de la répartition des médailles par genre pour chaque pays :** Un graphique en barres comparant le nombre total de médailles remportées par les athlètes masculins et féminins pour chaque pays participant. Cela permettrait de visualiser visuellement les différences de performances entre hommes et femmes dans différents pays.
+	> - **Graphique en secteurs ou camembert de la répartition des médailles par genre :** Un graphique en secteurs montrant la répartition des médailles entre hommes et femmes pour l'ensemble des Jeux Olympiques. Cela pourrait révéler la proportion relative de médailles remportées par chaque genre et mettre en évidence les pays où les performances des femmes sont les plus ou les moins représentées.
+    
 9. Comment la représentation des femmes aux Jeux Olympiques a-t-elle évolué au fil du temps ?  
-   > *Description*
    > Cette question vise à analyser l'évolution de la représentation des femmes aux Jeux Olympiques au fil du temps. L'objectif est d'identifier les tendances et les changements dans la participation et les performances des athlètes féminines dans différents sports et pays au fil des éditions des Jeux Olympiques.<br>
-    __Visualisation possibles :__
-    <ul>
-	<li><b>Graphique en ligne de la participation des femmes au fil du temps :</b> Un graphique en ligne montrant la proportion de femmes parmi tous les athlètes participants aux Jeux Olympiques au fil des éditions. Cela permettrait de visualiser la tendance à l'augmentation de la participation des femmes dans le sport olympique.</li>
-    	<li><b>Graphique en barres de la répartition des médailles par genre au fil du temps :</b> Un graphique en barres comparant le nombre total de médailles remportées par les athlètes masculins et féminins pour chaque édition des Jeux Olympiques. Cela permettrait de visualiser visuellement les changements dans les performances des femmes par rapport aux hommes au fil du temps.</li>
-    	<li><b>Carte géographique de la participation féminine par pays :</b> Une carte géographique montrant la participation des athlètes féminines dans différents sports et pays au fil des éditions des Jeux Olympiques. Cela permettrait de visualiser les variations régionales dans la représentation des femmes dans le sport olympique et d'identifier les pays où des progrès significatifs ont été réalisés en matière d'inclusion des femmes dans le sport.</li>
-    </ul>
+	> - **Graphique en ligne de la participation des femmes au fil du temps :** Un graphique en ligne montrant la proportion de femmes parmi tous les athlètes participants aux Jeux Olympiques au fil des éditions. Cela permettrait de visualiser la tendance à l'augmentation de la participation des femmes dans le sport olympique.
+	> - **Graphique en barres de la répartition des médailles par genre au fil du temps :** Un graphique en barres comparant le nombre total de médailles remportées par les athlètes masculins et féminins pour chaque édition des Jeux Olympiques. Cela permettrait de visualiser visuellement les changements dans les performances des femmes par rapport aux hommes au fil du temps.
+	> - **Carte géographique de la participation féminine par pays :** Une carte géographique montrant la participation des athlètes féminines dans différents sports et pays au fil des éditions des Jeux Olympiques. Cela permettrait de visualiser les variations régionales dans la représentation des femmes dans le sport olympique et d'identifier les pays où des progrès significatifs ont été réalisés en matière d'inclusion des femmes dans le sport.
+    
 
 
 
