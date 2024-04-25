@@ -218,13 +218,23 @@ ggplotly(p)
 ```
 
 
-## Analyse du Graphique : 
 
-Dans notre analyse des données des Jeux Olympiques, Nous avons observé une tendance claire en ce qui concerne la répartition des médailles par tranche d'âge des athlètes. La tranche d'âge la plus médaillée est celle des 21-30 ans, reflétant l'âge où les athlètes sont généralement au sommet de leur forme physique et ont accumulé une précieuse expérience en compétition. De plus, il est remarquable de constater que, quelle que soit la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze remportées est très proche, indiquant une performance sportive relativement équilibrée à travers les âges.
+## Analyse du Graphique : Répartition des médailles par tranche d'âge
 
-Toutefois, nous avons également remarqué une augmentation du nombre de médailles attribuées aux athlètes plus jeunes, notamment dans la catégorie des 0-20 ans. Cette augmentation pourrait être le résultat d'une spécialisation précoce des athlètes et d'une meilleure formation dès le plus jeune âge.
+En analysant les données des Jeux Olympiques, nous avons cherché à comprendre l'impact des caractéristiques physiques des athlètes sur leurs performances. Une tendance nette émerge quant à la répartition des médailles selon les tranches d'âge.
 
-En revanche, les athlètes âgés de 31 ans et plus ont tendance à voir une diminution du nombre de médailles remportées. Cette baisse pourrait être due à un déclin physique naturel et à une susceptibilité accrue aux blessures. Malgré cela, il est important de souligner que certains athlètes de ces catégories d'âge demeurent compétitifs et peuvent toujours exceller dans des sports moins dépendants de la force physique ou de l'endurance.
+### Athlètes de 21-30 ans : Au sommet de leur forme
+La tranche d'âge la plus fréquemment médaillée est celle des 21-30 ans, représentant un total impressionnant de **21,986 médailles**. Cette prédominance s'explique par le pic de forme physique et l'expérience compétitive que les athlètes de cette catégorie possèdent.
+
+### Performance équilibrée à travers les âges
+Indépendamment de la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela témoigne d'une performance sportive équilibrée tout au long des âges.
+
+### Jeunes athlètes (0-20 ans) : Une progression notable
+La catégorie des 0-20 ans montre une augmentation notable avec **4,120 médailles**. Cette hausse pourrait s'expliquer par une spécialisation plus précoce et une meilleure formation dès le plus jeune âge.
+
+### Déclin progressif chez les athlètes plus âgés
+Les athlètes âgés de 31 ans et plus connaissent une diminution des médailles remportées. Pour la tranche 31-40 ans, **3,723 médailles** ont été décernées, suivies de **46 médailles** pour la catégorie 41-50 ans et seulement **3 médailles** pour la catégorie 51-60 ans. Cette tendance pourrait être attribuée au déclin physique naturel et à une prédisposition accrue aux blessures. Cependant, il est important de noter que certains athlètes de ces tranches d'âge restent compétitifs et excèlent dans des sports qui ne requièrent pas une grande force physique ou endurance.
+
 
 
 
