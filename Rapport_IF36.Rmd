@@ -177,10 +177,72 @@ Il est intéressant d'explorer si le niveau économique d'un pays, mesuré par l
 	
 - **Carte géographique de la participation féminine par pays :** 
 	Une carte géographique montrant la participation des athlètes féminines dans différents sports et pays au fil des éditions des Jeux Olympiques. Cela permettrait de visualiser les variations régionales dans la représentation des femmes dans le sport olympique et d'identifier les pays où des progrès significatifs ont été réalisés en matière d'inclusion des femmes dans le sport.
-	
-	
-	
-	
+
+
+
+### Graphe analysant la répartition des médailles obtenues contre le nombre d'athlètes envoyés par pays (réalisé par : Thomas François)
+```{r MedaileVsAthlete, message=FALSE, warning=FALSE}
+data <- read.csv("./data/athlete_events.csv")
+noc_regions <- read.csv("./data/noc_regions.csv")
+
+country_summary <- data %>%
+  group_by(NOC) %>%
+  summarise(
+    Medals = sum(!is.na(Medal)),
+    Athletes = n_distinct(Name),
+  ) %>%
+  filter(!is.na(NOC))
+
+country_summary_with_regions <- left_join(country_summary, noc_regions, by = "NOC")
+
+
+p <- ggplot(country_summary_with_regions, aes(x = Medals, y = Athletes, label = region)) +
+  scale_x_log10() +  # Use log scale for x-axis
+  scale_y_log10() +
+  geom_point(color = "blue", size = 3, alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, color="black") +
+  labs(x = "Number of Medals", y = "Number of Athletes Sent") +
+  ggtitle("Medals vs. Athletes Sent by Country")
+
+ggplotly(p)
+```
+
+
+### Graphe analysant le nombre d'athlète présent pour chaque édition des Jeux Olympiques (réalisé par : Thomas François)
+```{r}
+data <- read.csv("./data/athlete_events.csv")
+regions <- read.csv("./data/noc_regions.csv")
+
+# Filter data for Summer and Winter seasons
+summer_data <- data %>% filter(Season == "Summer")
+winter_data <- data %>% filter(Season == "Winter")
+
+# Count unique athletes for each edition (Year) and Season
+summer_athletes_count <- summer_data %>%
+  group_by(Year) %>%
+  summarise(num_unique_athletes = n_distinct(Name))
+
+winter_athletes_count <- winter_data %>%
+  group_by(Year) %>%
+  summarise(num_unique_athletes = n_distinct(Name))
+
+combined_data <- bind_rows(
+  mutate(summer_athletes_count, Season = "Summer"),
+  mutate(winter_athletes_count, Season = "Winter")
+)
+
+# Plotting with ggplot2
+p <- ggplot(combined_data, aes(x = Year, y = num_unique_athletes, color = Season)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Year", y = "Number of Unique Athletes", color = "Season") +
+  ggtitle("Number of Unique Athletes Sent in Summer and Winter Olympics") +
+  theme_minimal()
+
+ggplotly(p)
+```
+
+
 ### Graphe analysant la répartition des médailles par tranhce d'âge (réalisé par :Mohamed Amine Jabote)
 ```{r}
 
