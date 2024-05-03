@@ -224,11 +224,11 @@ winter_data <- data %>% filter(Season == "Winter")
 # Count unique athletes for each edition (Year) and Season
 summer_athletes_count <- summer_data %>%
   group_by(Year) %>%
-  summarise(num_unique_athletes = n_distinct(Name))
+  summarise(nombre_athletes = n_distinct(Name))
 
 winter_athletes_count <- winter_data %>%
   group_by(Year) %>%
-  summarise(num_unique_athletes = n_distinct(Name))
+  summarise(nombre_athletes = n_distinct(Name))
 
 combined_data <- bind_rows(
   mutate(summer_athletes_count, Season = "Summer"),
@@ -236,17 +236,37 @@ combined_data <- bind_rows(
 )
 
 # Plotting with ggplot2
-p <- ggplot(combined_data, aes(x = Year, y = num_unique_athletes, color = Season)) +
+p <- ggplot(combined_data, aes(x = Year, y = nombre_athletes, color = Season)) +
   geom_line() +
   geom_point() +
-  labs(x = "Year", y = "Number of Unique Athletes", color = "Season") +
-  ggtitle("Number of Unique Athletes Sent in Summer and Winter Olympics") +
+  labs(x = "Année", y = "Nombre d'athlètes", color = "Session") +
+  ggtitle("Nombre d'athlètes aux Jeux Olympique d'été et d'hiver") +
   theme_minimal()
 
 ggplotly(p)
 ```
-	
-	
+
+## Analyse du graphique
+
+Le graphique démontre clairement que les Jeux olympiques d'été attirent un nombre plus important d'athlètes que les Jeux d'hiver. On observe également une tendance à la hausse de la participation au fil du temps, ce phénomène pouvant être expliqué par la mondialisation, la démocratisation du sport et le développement des systèmes de transport.
+
+De plus, une observation importante est que les Jeux olympiques n'ont pas eu lieu pendant la Seconde Guerre mondiale (1939-1945).
+
+### La baisse de participation
+Il est intéressant de constater qu'il y a eu trois baisses significatives de la participation aux Jeux olympiques d'été, en 1904, 1932, 1956, et de 1976 à 1984. Pendant ces six éditions, des boycotts et divers problèmes ont empêché un certain nombre de nations de participer aux événements.
+
+En 1904 et 1932, les Jeux olympiques ont été organisés dans des villes des États-Unis : Saint-Louis et Los Angeles. Ce choix de localisation impliquait un voyage long et difficile pour les pays participants, principalement européens à cette époque. Le manque de moyens de transport rapides et pratiques (comme les 16 jours de voyage pour l'équipe française en 1932) a entraîné une participation réduite lors de ces éditions.
+
+En 1956, de nombreux conflits ont dissuadé les pays d'envoyer leurs équipes : l'affaire du Canal de Suez, le deuxième conflit entre l'Égypte et Israël, la violence en Afrique du Nord (notamment en Algérie), ainsi que l'invasion de la Hongrie par les chars soviétiques. De plus, le fait que la ville hôte soit Melbourne en Australie, éloignée du continent européen qui envoie le plus de participants, n'a rien arrangé.
+
+Enfin, de 1976 à 1984, un important boycott des Jeux olympiques s'est organisé dans le contexte de la guerre froide. Le boycott des Jeux olympiques organisés en Russie ou aux États-Unis permettait de protester contre les événements qui se déroulaient à ce moment-là. La carte ci-dessous indique les nations ayant boycotté les éditions des Jeux olympiques d'été pendant cette période :
+
+</br>
+<p align="center">
+	<img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Olympic_boycotts_1976_1980_.png" width="80%" />	
+</p>
+</br>
+
 	
 ## Graphe analysant la comparaison de répartition des médailles par tranhce d'âge (réalisé par :Mohamed Amine Jabote)
 ```{r graphe, echo=FALSE, message=FALSE, warning=FALSE}
