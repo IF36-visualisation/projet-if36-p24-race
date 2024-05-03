@@ -192,24 +192,29 @@ noc_regions <- read.csv("noc_regions.csv")
 country_summary <- data %>%
   group_by(NOC) %>%
   summarise(
-    Medals = sum(!is.na(Medal)),
+    Medailles = sum(!is.na(Medal)),
     Athletes = n_distinct(Name),
   ) %>%
   filter(!is.na(NOC))
 
 country_summary_with_regions <- left_join(country_summary, noc_regions, by = "NOC")
 
-
-p <- ggplot(country_summary_with_regions, aes(x = Medals, y = Athletes, label = region)) +
-  scale_x_log10() +  # Use log scale for x-axis
-  scale_y_log10() +
+p <- ggplot(country_summary_with_regions, aes(x = Medailles, y = Athletes, label = region)) +
   geom_point(color = "blue", size = 3, alpha = 0.5) +
   geom_smooth(method = "lm", se = FALSE, color="black") +
-  labs(x = "Number of Medals", y = "Number of Athletes Sent") +
-  ggtitle("Medals vs. Athletes Sent by Country")
+  labs(x = "Nombre de Medailles", y = "Nombre d'athlètes envoyés") +
+  ggtitle("Medailles vs. Athlètes envoyés par pays")
 
 ggplotly(p)
 ```
+
+## Analyse du graphique :
+
+Ce graphique compare le nombre d'athlètes envoyés par chaque pays et le nombre de médailles obtenues. Comme prévu, il montre que plus un pays envoie d'athlètes aux Jeux, plus il remporte de médailles, il est possible de créer une equation de la tendance : le nombre de médailles = 0.46 * le nombre d'athlètes envoyés
+
+Il est remarquable de constater que les pays au-dessus de la ligne de tendance sous-performent par rapport à cette moyenne, tandis que ceux en dessous sur-performent (notamment la Russie et les États-Unis).
+
+Le graphique présente un biais significatif avec de nombreuses valeurs concentrées en bas, car la plupart des pays ont envoyé peu d'athlètes et, par conséquent, ont remporté peu de médailles. La domination des États-Unis aux Jeux olympiques, tant en nombre d'athlètes qu'en médailles, est particulièrement remarquable sur ce graphique.
 
 
 ### Graphe analysant le nombre d'athlète présent pour chaque édition des Jeux Olympiques (réalisé par : Thomas François)
