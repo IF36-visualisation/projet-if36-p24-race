@@ -310,9 +310,20 @@ ggplotly(p)
 ```
 
 
-## Analyse du Graphique : Comparaison de la distribution des médailles olympiques par tranche d'âge
+## Analyse du graphique
 
-En analysant les données des Jeux Olympiques, nous avons cherché à comprendre l'impact des caractéristiques physiques des athlètes sur leurs performances Pour répondre à la question 7. Une tendance nette émerge quant à la répartition des médailles selon les tranches d'âge.La tranche d'âge la plus fréquemment médaillée est celle des 21-30 ans, représentant un total impressionnant de **21,986 médailles**. Cette prédominance s'explique par le pic de forme physique et l'expérience compétitive que les athlètes de cette catégorie possèdent. Indépendamment de la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela témoigne d'une performance sportive équilibrée tout au long des âges.La catégorie des 0-20 ans montre une augmentation notable avec **4,120 médailles**. Cette hausse pourrait s'expliquer par une spécialisation plus précoce et une meilleure formation dès le plus jeune âge.Les athlètes âgés de 31 ans et plus connaissent une diminution des médailles remportées. Pour la tranche 31-40 ans, **3,723 médailles** ont été décernées, suivies de **46 médailles** pour la catégorie 41-50 ans et seulement **3 médailles** pour la catégorie 51-60 ans. Cette tendance pourrait être attribuée au déclin physique naturel et à une prédisposition accrue aux blessures. Cependant, il est important de noter que certains athlètes de ces tranches d'âge restent compétitifs et excèlent dans des sports qui ne requièrent pas une grande force physique ou endurance.
+Dans le cadre de notre analyse des données des Jeux Olympiques, nous nous sommes penchés sur l'impact des caractéristiques physiques des athlètes sur leurs performances. Une attention particulière a été portée à la répartition des médailles par tranche d'âge, afin de mieux comprendre les tendances observées.
+
+Une tendance nette émerge quant à la répartition des médailles selon les tranches d'âge. La tranche d'âge la plus fréquemment médaillée est celle des 21-30 ans, représentant un total impressionnant de 21,986 médailles. Cette prédominance s'explique par le pic de forme physique et l'expérience compétitive que les athlètes de cette catégorie possèdent.
+
+Indépendamment de la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela témoigne d'une performance sportive équilibrée tout au long des âges. Ainsi, quelle que soit la catégorie d'âge, les athlètes ont des chances similaires de remporter des médailles.
+
+Une augmentation notable est observée dans la catégorie des 0-20 ans, avec un total de 4,120 médailles. Cette hausse pourrait s'expliquer par une spécialisation plus précoce et une meilleure formation dès le plus jeune âge. Les athlètes de cette tranche d'âge bénéficient ainsi d'une plus grande visibilité et de ressources accrues pour exceller dans leur discipline.
+
+Pour les athlètes âgés de 31 ans et plus, une diminution des médailles remportées est constatée. Pour la tranche 31-40 ans, 3,723 médailles ont été décernées, suivies de seulement 46 médailles pour la catégorie 41-50 ans, et 3 médailles pour la catégorie 51-60 ans. Ce déclin pourrait être attribué au processus naturel de vieillissement et à une prédisposition accrue aux blessures.
+
+En conclusion, l'analyse de la répartition des médailles par tranche d'âge aux Jeux Olympiques met en lumière des tendances significatives quant à l'impact des caractéristiques physiques sur les performances des athlètes. Comprendre ces tendances est essentiel pour les athlètes, les entraîneurs et les décideurs sportifs, afin d'optimiser les stratégies de formation et de développement des talents.
+
 
 ## Graphe de Freddy ...
 
@@ -364,12 +375,7 @@ top10 <- classement_medailles %>% head(10)
 top10
 ```
 
-```{r, echo=FALSE}
-# Création du graphique avec les couleurs de drapeaux
-ggplot(data = top10, aes(x = reorder(region,total_medaille), y = total_medaille)) +
-  geom_col() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
+
 
 ```{r, echo=FALSE, include=FALSE}
 top10_per_medals <- data_pays_medailles %>% filter(region %in% top10$region)
@@ -377,20 +383,8 @@ top10_per_medals <- top10_per_medals %>% group_by(region,Medal) %>% summarise(to
 top10_per_medals
 ```
 
-```{r, echo=FALSE, include=FALSE}
-ggplot(data = top10_per_medals, aes(x = reorder(region,total_medaille), y = total_medaille, fill = Medal)) +
-  geom_col(position = "dodge") +
-  labs(title = "Nombre total de médailles par pays et type de médaille",
-       x = "Pays", y = "Nombre de médailles") +
-  scale_fill_manual(values = c("Gold" = "goldenrod1", "Silver" = "#C0C0C0", "Bronze" = "saddlebrown")) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-```
 
-```{r, echo=FALSE}
-ggplot(head(classement_medailles,30),aes(y =reorder(region,total_medaille),x=total_medaille))+
-  geom_col() +
-  labs(title = "classement des pays les plus médaillés des jeux olympiques", x="total de médailles", y="pays")
-```
+
 ```{r, echo=FALSE, include=FALSE}
 classement_per_medals <- data_pays_medailles %>% filter(region %in% head(classement_medailles,30)$region)
 classement_per_medals <- classement_per_medals %>% group_by(region,Medal) %>% summarise(total_medaille = n())
