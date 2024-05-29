@@ -299,19 +299,145 @@ ggplotly(p)
 
 ```
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Importation des données
+data <- read_csv("athlete_events.csv")
+
+# Suppression des valeurs manquantes
+
+
+# Création d'une variable Age_group pour regrouper les âges en tranches
+data <- data %>%
+  mutate(Age_group = cut(Age, breaks = c(0, 20, 30, 40, 50, 60, 70, 80, 90, 100), 
+                         labels = c("0-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100")))
+
+# Réordonner les tranches d'âge
+data$Age_group <- factor(data$Age_group, levels = c("0-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"))
+
+# Calculer la répartition des athlètes par tranche d'âge
+age_group_counts <- data %>% count(Age_group)
+
+# Création du graphique en barres avec Plotly
+p <- plot_ly(data = age_group_counts, x = ~Age_group, y = ~n, type = 'bar',
+             marker = list(color = '#69b3a2', line = list(color = 'black', width = 1))) %>%
+  layout(title = "Répartition des athlètes olympiques par tranche d'âge",
+         xaxis = list(title = "Tranche d'âge"),
+         yaxis = list(title = "Nombre d'athlètes"),
+         barmode = 'group',
+         xaxis = list(tickangle = 45))
+
+# Ajouter des étiquettes sur les barres
+p <- p %>% add_annotations(x = ~Age_group, y = ~n, text = ~n, showarrow = FALSE, 
+                           yshift = 10)
+
+# Afficher le graphique
+p
+
+
+```
+
 ## Analyse du graphique
 
-Dans le cadre de notre analyse des données des Jeux Olympiques, nous nous sommes penchés sur l'impact des caractéristiques physiques des athlètes sur leurs performances. Une attention particulière a été portée à la répartition des médailles par tranche d'âge, afin de mieux comprendre les tendances observées.
+Dans notre analyse des données des Jeux Olympiques, nous avons scruté l'impact des caractéristiques physiques des athlètes sur leurs performances, en tenant compte du nombre d'athlètes dans chaque tranche d'âge. Nous avons observé une tendance nette dans la répartition des médailles par tranche d'âge, laquelle est significativement influencée par le nombre d'athlètes participant dans chaque groupe.
 
-Une tendance nette émerge quant à la répartition des médailles selon les tranches d'âge. La tranche d'âge la plus fréquemment médaillée est celle des 21-30 ans, représentant un total impressionnant de 21,986 médailles. Cette prédominance s'explique par le pic de forme physique et l'expérience compétitive que les athlètes de cette catégorie possèdent.
+La tranche d'âge la plus fréquemment médaillée est celle des 21-30 ans, avec un total impressionnant de 21 986 médailles. Cette dominance peut être attribuée au pic de forme physique et à l'expérience compétitive que possèdent généralement les athlètes de cette catégorie. De plus, avec un nombre élevé d'athlètes (171 914), cette tranche d'âge a également une probabilité plus élevée de remporter des médailles.
 
-Indépendamment de la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela témoigne d'une performance sportive équilibrée tout au long des âges. Ainsi, quelle que soit la catégorie d'âge, les athlètes ont des chances similaires de remporter des médailles.
+Il est intéressant de noter que, indépendamment de la tranche d'âge, le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela suggère une performance sportive équilibrée tout au long des âges. Ainsi, quel que soit le groupe d'âge, les athlètes ont des chances similaires de remporter des médailles, bien que cela puisse être influencé par le nombre d'athlètes dans chaque catégorie.
 
-Une augmentation notable est observée dans la catégorie des 0-20 ans, avec un total de 4,120 médailles. Cette hausse pourrait s'expliquer par une spécialisation plus précoce et une meilleure formation dès le plus jeune âge. Les athlètes de cette tranche d'âge bénéficient ainsi d'une plus grande visibilité et de ressources accrues pour exceller dans leur discipline.
+Une augmentation notable est observée dans la catégorie des 0-20 ans, avec un total de 4 120 médailles. Cette hausse pourrait être due à une spécialisation précoce et à une meilleure formation dès le plus jeune âge, ce qui pourrait attirer un plus grand nombre d'athlètes dans cette tranche d'âge. De plus, avec 47 561 athlètes dans cette tranche d'âge, la compétition est forte, ce qui contribue à un nombre accru de médailles remportées.
 
-Pour les athlètes âgés de 31 ans et plus, une diminution des médailles remportées est constatée. Pour la tranche 31-40 ans, 3,723 médailles ont été décernées, suivies de seulement 46 médailles pour la catégorie 41-50 ans, et 3 médailles pour la catégorie 51-60 ans. Ce déclin pourrait être attribué au processus naturel de vieillissement et à une prédisposition accrue aux blessures.
+En revanche, pour les athlètes âgés de 31 ans et plus, une diminution des médailles remportées est observée. Par exemple, pour la tranche 31-40 ans, 3 723 médailles ont été décernées, suivies de seulement 46 médailles pour la catégorie 41-50 ans, et 3 médailles pour la catégorie 51-60 ans. Cette baisse peut être attribuée au processus naturel de vieillissement, qui peut entraîner une diminution de la forme physique et une prédisposition accrue aux blessures. De plus, avec moins d'athlètes dans ces tranches d'âge, la concurrence est moins intense.
 
-En conclusion, l'analyse de la répartition des médailles par tranche d'âge aux Jeux Olympiques met en lumière des tendances significatives quant à l'impact des caractéristiques physiques sur les performances des athlètes. Comprendre ces tendances est essentiel pour les athlètes, les entraîneurs et les décideurs sportifs, afin d'optimiser les stratégies de formation et de développement des talents.
+En analysant ces tendances, il est clair que le nombre d'athlètes dans chaque tranche d'âge influence significativement le nombre de médailles remportées. Plus le nombre d'athlètes est élevé, plus les chances de remporter des médailles dans cette tranche d'âge sont élevées. Cependant, il est important de noter que cette observation reflète une corrélation et non une causalité directe.
+
+En conclusion, notre analyse met en lumière l'importance du nombre d'athlètes dans chaque tranche d'âge dans la détermination du nombre de médailles remportées aux Jeux Olympiques. Cette compréhension est cruciale pour les stratégies de formation et de développement des talents, ainsi que pour une meilleure appréciation des performances sportives dans différentes catégories d'âge.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Importation des données
+data <- read_csv("athlete_events.csv")
+
+# Filtrer les athlètes médaillés pour les trois sports
+sports <- c("Swimming", "Athletics", "Judo")
+medalists <- data %>%
+  filter(!is.na(Medal) & Sport %in% sports) %>%
+  drop_na(Height, Weight)
+
+# Fonction pour créer un graphique pour un sport donné avec des couleurs spécifiques
+create_sport_plot <- function(sport_name, point_color) {
+  sport_data <- medalists %>% filter(Sport == sport_name)
+  plot_ly(sport_data, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
+          marker = list(color = point_color, opacity = 0.6)) %>%
+    add_trace(x = ~Height, y = ~fitted(lm(Weight ~ Height, data = sport_data)),
+              mode = 'lines', line = list(color = 'black')) %>%
+    layout(title = paste("Relation entre la taille et le poids des athlètes médaillés en", sport_name),
+           xaxis = list(title = "Taille (cm)"),
+           yaxis = list(title = "Poids (kg)"),
+           showlegend = FALSE)
+}
+
+# Créer les graphiques pour chaque sport avec les couleurs spécifiées
+plot_swimming <- create_sport_plot("Swimming", "blue")
+plot_athletics <- create_sport_plot("Athletics", "brown")
+plot_judo <- create_sport_plot("Judo", "red")
+
+# Afficher les graphiques
+plot_swimming
+
+```
+
+## Graphe en nugage de points de la taille et du poids des médaillés en natation
+
+Le graphique en nuage de points ci-dessus illustre la relation entre la taille (en centimètres) et le poids (en kilogrammes) des athlètes médaillés en natation. Chaque point bleu représente un athlète, tandis que la ligne noire correspond à la ligne de régression linéaire, indiquant la tendance générale de la relation entre ces deux variables.
+
+L'analyse des données révèle une corrélation positive entre la taille et le poids des nageurs médaillés. Les athlètes plus grands ont tendance à être plus lourds, comme le montre la ligne de régression ascendante. Cette relation est d'autant plus forte que les points de données sont regroupés de manière dense. Cependant, il existe une certaine variation, notamment chez les nageurs très petits ou très grands, où le poids peut varier davantage.
+
+Cette corrélation peut s'expliquer par les avantages physiques que procure une grande taille en natation, tels que des mouvements plus longs et plus puissants. Un poids proportionné à la taille contribue également à la flottabilité et à l'optimisation des performances.
+
+Il est important de noter que la performance en natation ne dépend pas uniquement de la taille et du poids. Certains athlètes médaillés, qui s'écartent de la tendance générale en termes de caractéristiques physiques, ont réussi à exceller grâce à d'autres facteurs tels que la technique, l'entraînement et la détermination.
+
+En conclusion, ce graphique démontre une corrélation claire entre la taille et le poids des nageurs médaillés, reflétant l'importance des caractéristiques physiques dans ce sport. Pour une analyse plus approfondie, il serait pertinent de comparer ces résultats avec d'autres disciplines sportives pour identifier des tendances similaires ou différentes.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}  
+
+plot_athletics
+
+```
+
+
+## Analyse du Graphique en Nuage de Points pour les Athlètes Médaillés en Athlétisme
+
+L'analyse des données révèle une corrélation positive entre la taille et le poids des athlètes médaillés en athlétisme. Comme dans le cas de la natation, les athlètes plus grands ont tendance à être plus lourds. Toutefois, la dispersion des points est plus marquée, ce qui reflète une plus grande variation dans les caractéristiques physiques des athlètes d'athlétisme.
+
+Cette plus grande variation peut s'expliquer par la diversité des épreuves d'athlétisme, qui regroupent des disciplines très variées telles que les courses de vitesse, les courses de fond, les sauts et les lancers. Chaque épreuve nécessite des caractéristiques physiques spécifiques. Par exemple, les lanceurs de poids et de disque ont tendance à être plus grands et plus lourds que les sprinteurs, qui sont généralement plus petits et plus légers pour maximiser leur vitesse.
+
+La ligne de régression montre clairement la tendance générale selon laquelle, en moyenne, les athlètes plus grands pèsent plus lourd. Cependant, la densité des points le long de cette ligne varie, indiquant que d'autres facteurs influencent également la relation entre la taille et le poids des athlètes en athlétisme.
+
+En conclusion, bien que ce graphique démontre une corrélation entre la taille et le poids chez les athlètes médaillés en athlétisme, il met également en évidence la diversité des morphologies requises pour exceller dans les différentes disciplines. Cela souligne l'importance de considérer les spécificités de chaque épreuve pour une analyse plus fine des performances sportives. Pour une analyse plus approfondie, il serait intéressant de comparer ces résultats avec ceux d'autres disciplines sportives pour identifier des tendances similaires ou divergentes.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}  
+plot_judo
+```
+## Analyse du Graphique en Nuage de Points pour les Athlètes Médaillés en Judo
+
+L'analyse des données montre une corrélation positive significative entre la taille et le poids des judokas médaillés. En général, les athlètes plus grands tendent à peser plus lourd, comme indiqué par la pente ascendante de la ligne de régression. Cependant, il est important de noter que les points sont assez dispersés par rapport à cette ligne, indiquant une variation notable dans les caractéristiques physiques des judokas médaillés.
+
+Cette dispersion peut être attribuée aux différentes catégories de poids présentes dans le judo, qui vont des poids légers aux poids lourds. Chaque catégorie de poids a ses propres exigences et caractéristiques physiques. Par exemple, les judokas des catégories de poids légers peuvent être plus petits et plus minces, tandis que ceux des catégories de poids lourds sont généralement plus grands et plus massifs.
+
+La ligne de régression montre que, malgré la diversité des morphologies, il existe une tendance générale à ce que les athlètes plus grands soient également plus lourds. Cependant, cette relation est influencée par les spécificités des différentes catégories de poids, ce qui explique la plus grande dispersion des points autour de la ligne.
+
+En conclusion, ce graphique démontre une corrélation claire entre la taille et le poids chez les judokas médaillés, mais il met également en évidence la variabilité importante des caractéristiques physiques en fonction des catégories de poids. Cette analyse souligne l'importance de considérer les catégories de poids spécifiques lors de l'évaluation des performances en judo. Pour une analyse plus approfondie, il serait intéressant de comparer ces résultats avec ceux d'autres disciplines sportives pour identifier des tendances similaires ou divergentes.
+
+## Conslusion : 
+
+En analysant trois types de sports qui demandent des conditions physiques différentes pour exceller, nous avons pu observer des tendances similaires en ce qui concerne la relation entre la taille et le poids des athlètes médaillés. Dans chaque discipline, les athlètes plus grands ont tendance à peser plus lourd, ce qui peut être attribué à des avantages physiques spécifiques à chaque sport.
+
+Les caractéristiques physiques telles que la taille et le poids ont un impact significatif sur les performances et les résultats des athlètes médaillés, mais cet impact est modulé par les exigences spécifiques de chaque sport. En natation, une grande taille et un poids proportionné semblent être des atouts. En athlétisme, la diversité des épreuves permet une plus grande variabilité des caractéristiques physiques optimales. En judo, les catégories de poids dictent les morphologies des médaillés.
+
+Pour maximiser les chances de succès, les athlètes et leurs entraîneurs doivent comprendre et optimiser les caractéristiques physiques spécifiques requises par leur discipline. De plus, la performance sportive ne repose pas uniquement sur la taille et le poids, mais également sur des facteurs tels que la technique, l'entraînement, la stratégie et la psychologie.
+
+
 
 ## Graphe analysant les pays ayant exercé une domination dans l'histoire des Jeux Olympiques (Freddy POUNA)
 
@@ -401,3 +527,115 @@ Chine : Au cours des dernières décennies, la Chine est devenue l'une des super
 Allemagne : Que ce soit en tant que l'Allemagne unifiée ou l'Allemagne de l'Est et de l'Ouest séparées, ce pays a maintenu une présence solide sur le podium olympique. L'Allemagne a été particulièrement forte dans les sports d'hiver ainsi que dans plusieurs sports d'été.
 Royaume-Uni : Le Royaume-Uni a une longue histoire aux Jeux Olympiques et a été un compétiteur remarquable dans plusieurs sports. Avec des performances impressionnantes dans des sports comme la voile, l'athlétisme et le cyclisme, le Royaume-Uni a constamment remporté des médailles tout au long de son histoire olympique.
 En conclusion, ces pays, parmi d'autres, ont démontré une domination remarquable dans l'histoire des Jeux Olympiques, témoignant de leur engagement envers l'excellence sportive et de leur capacité à former et à soutenir des athlètes de classe mondiale. Quels sont donc les facteur ayant concourru à l'égémonie de leurs athlètes au cours de l'histoire des jeux. 
+
+## Question 9 :
+## Analyse d'évolution des représentation des femmes aux jeux olympiques
+
+```{r, echo=FALSE}
+
+total_femmes <- data_jo %>%
+  filter(Sex == "F") %>%
+  group_by(Games) %>%
+  summarise(Nombre_femmes = n())
+
+# Calculer la proportion de femmes parmi les athlètes pour chaque édition des Jeux Olympiques
+proportion_femmes <- data_jo %>%
+  group_by(Games) %>%
+  summarise(Proportion_femmes = mean(Sex == "F", na.rm = TRUE))
+
+# Fusionner les données de nombre total de femmes et de proportion de femmes
+data_femmes <- left_join(total_femmes, proportion_femmes, by = "Games")
+
+# Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
+plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+  add_trace(y = ~Nombre_femmes, name = "Nombre de femmes", yaxis = "y2", type = 'scatter', mode = 'lines', line = list(color = 'red')) %>%
+  layout(title = "Participation des femmes aux Jeux Olympiques au fil du temps",
+         xaxis = list(title = "Édition des Jeux Olympiques"),
+         yaxis = list(title = "Proportion de femmes parmi les athlètes", side = "left"),
+         yaxis2 = list(title = "Nombre de femmes", side = "right", overlaying = "y", showgrid = FALSE),
+         hovermode = "closest",
+         showlegend = TRUE,
+         legend = list(orientation = "h"))
+
+```
+
+
+Le graphique ci-dessus illustre l'évolution de la participation des femmes aux Jeux Olympiques au fil du temps, en mettant en évidence la proportion de femmes parmi les athlètes et le nombre total de femmes participant à chaque édition des Jeux.
+
+Proportion de femmes :
+
+
+
+## Question 5 : 
+
+## Analyse de l'impact du niveau économique d'un pays sur ses performances aux Jeux Olympiques
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Charger les données
+data_jo <- read_csv('athlete_events.csv')
+data_noc_regions <- read_csv('noc_regions.csv')
+data_PIB <- read_delim('GDP_per_capita.csv', delim = ';')
+
+# Renommer la première colonne de data_PIB en "Country" pour la jointure
+names(data_PIB)[1] <- "Country"
+
+# Préparer les données des Jeux Olympiques
+data_jo <- data_jo %>%
+  filter(!is.na(Medal)) %>%
+  group_by(NOC, Year) %>%
+  summarise(total_medals = n()) %>%
+  ungroup()
+
+# Préparer les données de PIB par habitant
+data_PIB_long <- data_PIB %>%
+  pivot_longer(cols = starts_with('19') | starts_with('20') | starts_with('21'), names_to = "Year", values_to = "GDP_per_capita") %>%
+  mutate(Year = as.numeric(Year)) %>%
+  mutate(GDP_per_capita = as.numeric(GDP_per_capita))  # Assurez-vous que les valeurs de GDP_per_capita sont numériques
+
+# Fusionner les données des JO avec les régions NOC
+data_jo <- data_jo %>%
+  left_join(data_noc_regions, by = "NOC")
+
+# Fusionner les données des médailles avec les données de PIB par habitant
+data_combined <- data_jo %>%
+  left_join(data_PIB_long, by = c("region" = "Country", "Year"))
+
+# Filtrer les données complètes
+data_combined <- data_combined %>%
+  filter(!is.na(GDP_per_capita))
+
+# Créer des tranches de PIB par habitant en utilisant des quantiles
+data_combined <- data_combined %>%
+  mutate(GDP_bin = cut(GDP_per_capita, breaks = quantile(GDP_per_capita, probs = seq(0, 1, by = 0.1), na.rm = TRUE), include.lowest = TRUE))
+
+# Créer un box plot avec Plotly
+p <- plot_ly(data_combined, y = ~total_medals, x = ~GDP_bin, type = 'box', boxpoints = 'all',
+             jitter = 0.3, pointpos = -1.8, marker = list(color = 'rgba(152, 0, 0, .8)'),
+             text = ~paste('Country:', region, '<br>Year:', Year)) %>%
+  layout(title = "Distribution des médailles par tranches de PIB par habitant",
+         xaxis = list(title = "Tranches de PIB par habitant (USD)", categoryorder = "array",
+                      categoryarray = unique(data_combined$GDP_bin)),
+         yaxis = list(title = "Nombre total de médailles"))
+
+# Afficher le graphique
+p
+
+```
+Le graphique met en lumière la répartition des médailles obtenues aux Jeux Olympiques selon les tranches de PIB par habitant, organisées en déciles. Plusieurs observations et analyses peuvent être tirées de ces données.
+
+Disparité des Médailles :
+Les tranches de PIB les plus élevées, telles que celles situées entre 777 et 896 USD, et entre 896 et 1401 USD, affichent généralement un nombre plus important de médailles par rapport aux tranches de PIB plus faibles. Par exemple, les pays ayant un PIB par habitant compris entre 777 et 896 USD présentent une diversité plus large de médailles, avec certains pays accumulant plus de 80 médailles.
+
+Médianes et Quartiles :
+Les médianes, représentées par les lignes centrales des boîtes (boxplots), demeurent relativement basses pour toutes les tranches, suggérant que la majorité des pays remportent un nombre modeste de médailles. Les quartiles inférieurs et supérieurs révèlent également que même dans les tranches de PIB les plus élevées, une grande majorité des pays obtiennent un nombre relativement faible de médailles.
+
+Outliers :
+Des points de données sont dispersés au-dessus des boîtes (outliers), notamment dans les tranches de PIB les plus élevées. Ces outliers représentent des pays ayant connu un succès exceptionnel aux Jeux Olympiques malgré un PIB par habitant potentiellement modeste. Les tranches de PIB plus élevées affichent généralement davantage d'outliers, suggérant ainsi une corrélation entre un PIB plus élevé et un succès olympique accru.
+
+Interprétation des Tranches de PIB :
+La distribution suggère une corrélation positive entre un PIB par habitant plus élevé et un succès olympique accru, bien que cette relation ne soit pas linéaire et qu'il existe de nombreuses variations au sein de chaque tranche. Certaines tranches de PIB intermédiaires, telles que celles situées entre 576 et 696 USD, présentent également une dispersion relativement élevée des médailles, indiquant que le PIB n'est pas le seul facteur déterminant le succès olympique.
+
+En conclusion, l'analyse de la distribution des médailles par tranches de PIB par habitant met en lumière la complexité des facteurs qui influencent les performances des pays aux Jeux Olympiques. Alors que le PIB par habitant peut jouer un rôle significatif dans le succès olympique, d'autres facteurs tels que l'investissement dans le sport, les infrastructures, la culture sportive et les politiques sportives nationales peuvent également contribuer de manière significative aux performances des pays aux Jeux Olympiques. Cette analyse souligne l'importance de considérer une gamme de facteurs pour comprendre pleinement les dynamiques complexes qui sous-tendent les performances sportives à l'échelle mondiale.
+
+
