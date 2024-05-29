@@ -1,0 +1,193 @@
+---
+title: "Rapport IF36 - 120 years of olympic history"
+subtitle: "Semestre : P24"
+author: "Mohamed Amine jabote, Thomas François, Freddy Durel Pouna Wantou"
+output: 
+  html_document:
+    runtime: shiny
+    viewport: width=device-width, initial-scale=1
+---
+
+```{r setup, include=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(plotly)
+library(tidyr)
+
+```
+
+```{r loading data, include=FALSE}
+data_jo = read_csv('athlete_events.csv')
+data_noc_regions <- read_csv('noc_regions.csv')
+```
+
+</br>
+
+<p align="center">
+<img src="https://st.depositphotos.com/2793427/4712/i/450/depositphotos_47122635-stock-photo-white-olympics-flag-against-the.jpg" width="80%"/>
+</p>
+
+</br>
+
+# Introduction
+
+Avec les **Jeux olympiques de Paris 2024** à l'horizon et l'engouement actuel en France pour cet événement, nous avons choisi de travailler sur le thème des Jeux olympiques à travers les âges.
+
+Pour cela, nous avons décidé d'utiliser le jeu de données **"120 ans d'histoire des Jeux Olympiques"** contenant les données de 28 éditions d'été et 22 d'hiver des Jeux Olympiques, ce qui équivaut à un peu moins de 136 000 individus, répartis sur 15 variables. Ces variables comprennent des informations telles que les noms des athlètes, leur âge, poids, taille, la saison des Jeux Olympiques, les médailles remportées, etc. Les données proviennent du site www.sports-reference.com et sont le résultat d'un travail de recherche réalisé par un groupe intéressé par l'histoire des Jeux Olympiques.
+
+Avec des membres de notre groupe ayant des niveaux de connaissances variés sur les Jeux Olympiques, l'étude de ce jeu de données nous offre l'opportunité unique de plonger dans l'histoire et les tendances de cet événement emblématique, tout en élargissant notre compréhension de l'impact du sport sur la société à travers les âges.
+
+</br>
+
+# Plan d'analyse
+
+Nous avons compilé une série de questions que nous tenterons de résoudre en utilisant le jeu de données. Ces questions sont divisées en deux catégories principales : l'évolution des Jeux Olympiques et les performances des athlètes.
+
+### L'évolution des Jeux Olympiques
+
+1. Quels pays ont exercé une domination dans l'histoire des Jeux Olympiques ?
+2. Comment les Jeux Olympiques d'été se différencient-ils aux Jeux Olympiques d'hiver ?
+3. Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?
+4. Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?
+5. Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?
+
+### Les athlètes
+
+6. Quels sont les athlètes qui ont marqué les jeux olympiques ?
+7. Quels sont les impacts des caractéristiques physiques sur les résultats ?
+8. Est-ce que la répartition des médailles entre hommes et femmes varie selon les pays ?
+9. Comment la représentation des femmes aux Jeux Olympiques a-t-elle évolué au fil du temps ?
+
+</br>
+
+# Analyse
+
+</br>
+
+## 1. Les pays donminants
+
+Il est tout d'abord important de se pencher sur la dynamique globale de ces évènements
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 2. La différence des sessions d'hiver et d'été
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 3. La participation à travers les âges
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 4. L'impact du pays hôte
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 5. L'impact du niveau économique
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 6. Les athlètes dominants
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 7. Le physiques des athlètes
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 8. La répartition homme / femme
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+</br>
+
+## 9. La place des femmes à travers le temps
+
+Introduction
+
+</br>
+
+Graphiques et explications
+
+</br>
+
+Conclusion
+
+
