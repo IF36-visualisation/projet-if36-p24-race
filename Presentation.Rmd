@@ -9,18 +9,20 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-
 library(dplyr)
 library(ggplot2)
 library(readr)
 library(plotly)
 library(tidyr)
-
+library(ggrepel)
+library(gridExtra)
+library(grid)
 ```
 
 ```{r loading data, include=FALSE}
 data_jo = read_csv('athlete_events.csv')
 data_noc_regions <- read_csv('noc_regions.csv')
+data_iso_regions <- read_csv('iso_regions.csv')
 ```
 
 </br>
@@ -68,45 +70,450 @@ Nous avons compilé une série de questions que nous tenterons de résoudre en u
 
 ## 1. Les pays donminants
 
-Il est tout d'abord important de se pencher sur la dynamique globale de ces évènements
+Pour commencer notre analyse, nous allons nous concentrer sur la première question : Quels pays ont exercé une domination dans l'histoire des Jeux Olympiques ?  
+Cette question vise à identifier les nations qui se sont distinguées par leurs performances exceptionnelles et régulières aux Jeux Olympiques.  
+Cette analyse sera également utile pour mieux comprendre les résultats des prochaines questions analysées, en fournissant un contexte sur les dynamiques historiques et les tendances de performance des différentes nations.
+
+</br></br>
+
+```{r Question1-A, echo=FALSE, fig.align="center"}
+country_medal_counts <- data_jo %>%
+  group_by(NOC) %>%
+  filter(!is.na(Medal)) %>%
+  summarise(total_medals = n())
+
+# Define bins for the histogram
+bins <- c(0, 1, 10, 100, 1000, Inf)
+
+labels_bins <- c("0-1", "1-10", "10-100", "100-1000", "1000+")
+
+# Create histogram with defined bins
+ggplot(country_medal_counts, aes(x = cut(total_medals, bins, labels = labels_bins))) +
+  geom_bar(stat = "count", fill = "skyblue", color = "black") +
+  labs(x = "Number of Medals", y = "Number of Countries", title = "Distribution of Countries by Medal Counts") +
+  scale_x_discrete(labels = labels_bins) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 18))
+
+```
 
 </br>
 
-Graphiques et explications
+```{r Question1-B, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+
+
+number_of_medals <- data_jo %>%
+  distinct() %>%
+  filter(!is.na(Medal)) %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region) %>%
+  summarize(Medals = n()) %>%
+  right_join(data_iso_regions, by = "region") %>%
+  mutate(Medals = ifelse(is.na(Medals), 0, Medals))
+
+plot_ly(
+  data = number_of_medals,
+  type = 'choropleth',
+  locations = ~ ISO,
+  z = ~ Medals,
+  text = ~ region,
+  colorscale = list(
+    c(0, 0.01,  0.5, 0.8, 1),
+    c('white', 'lightblue', 'blue' , 'darkblue', 'black')
+  ),
+  autocolorscale = FALSE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = "Nombre de médailles")
+) %>%
+  layout(
+    title = list(
+      text = "Nombre de médailles obtenus par pays",
+      y = 0.99,
+      font = list(size = 24)
+    ),
+    margin = list(
+      l = 0,
+      r = 0,
+      b = 0,
+      t = 20,
+      pad = 0
+    ),
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+```
+
+Comme on peut voir sur ces deux graphiques, la majorité des pays on aucune ou peu de médailles (entre 0 et 100) et une minorité de pays à un grand nombre de médailles (500+). On peut voir sur la carte que les pays ayant un grand nombre de médailles sont principalements situés en Amérique du Nord et en Europe ainsi que les pays considérés comme riches (Chine, Australie, Brésil) comme nous le veront à la question 5.
+
+</br><hr width="20%" /></br>
+
+```{r Question1-C, echo=FALSE, fig.align="center", fig.width = 14}
+data_filtered <- data_jo %>%
+  distinct() %>%
+  filter(!is.na(Medal)) %>%
+  left_join(data_noc_regions, by = "NOC")
+
+
+# Aggregate the total medal count per country and identify the top 10 countries
+top_30_countries <- data_filtered %>%
+  count(region) %>%
+  top_n(30, n)
+
+
+# Filter the original data to include only these top 10 countries
+top_30_data <- data_filtered %>%
+  filter(region %in% top_30_countries$region)
+
+top_30_data$Medal <-
+  factor(top_30_data$Medal, levels = c("Gold", "Silver", "Bronze"))
+
+# Aggregate the data to count the number of each type of medal per country
+medals_per_country <- top_30_data %>%
+  count(region, Medal)
+
+# Create a stacked histogram of the number of medals per country by type, ordered by total medals
+ggplot(medals_per_country, aes(
+  x = reorder(region,-n),
+  y = n,
+  fill = Medal
+)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Stacked Histogram of Medals per Country (Top 30)",
+       x = "Country",
+       y = "Number of Medals",
+       fill = "Medal Type") +
+  scale_fill_manual(values = c(
+    "Gold" = "#FFD700",
+    "Silver" = "#C0C0C0",
+    "Bronze" = "#CD7F32"
+  )) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 24))
+
+```
 
 </br>
 
-Conclusion
+```{r Question1-D, echo=FALSE, fig.align="center", fig.width = 14}
+data_filtered_2 <- data_jo %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC")
+
+athletes_per_region <- data_filtered_2 %>%
+  group_by(region) %>%
+  summarize(Distinct = n_distinct(ID), Total = n()) %>%
+  arrange(desc(Total)) %>%
+  head(30)
+
+ggplot(athletes_per_region, aes(x = reorder(region,-Total))) +
+  geom_bar(aes(y = Total, fill = "Total"), stat = "identity", alpha = 1) +
+  geom_bar(aes(y = Distinct, fill = "Distinct"),
+           stat = "identity",
+           alpha = 1) +
+  labs(title = "Numbers of Athletes per Region",
+       x = "Region",
+       y = "Count",
+       fill = "Legend") +
+  scale_fill_manual(values = c("Total" = "lightblue", "Distinct" = "lightgreen"),
+                    name = "Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  theme(plot.title = element_text(hjust = 0.5, size = 24))
+
+```
 
 </br>
+
+Il est intéréssant de remarquer que les même pays sont dans le top de classement de médailles de du nombre d'athlètes envoyés avec les même 6 pays au top des classements (États-Unis, Russie, Allemagne, Angleterre, France et Italie)
+
+</br><hr width="20%" /></br>
+
+```{r Question1-E, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+country_summary_with_regions <- data_jo %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region) %>%
+  summarise(Medailles = sum(!is.na(Medal)),
+            Athletes = n_distinct(Name),) %>%
+  arrange(desc(Medailles)) %>%
+  filter(!is.na(region))
+
+ggplot(country_summary_with_regions,
+       aes(x = Medailles, y = Athletes, label = region)) +
+  geom_point(color = "blue",
+             size = 3,
+             alpha = 0.5) +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "black",
+    size = 0.3
+  ) +
+  geom_text_repel(size = 3, segment.color = "transparent") +
+  labs(x = "Nombre de Medailles", y = "Nombre d'athlètes envoyés") +
+  theme_minimal() +
+  ggtitle("Medailles vs. Athlètes envoyés par pays") +
+  theme(plot.title = element_text(hjust = 0.5, size = 18))
+
+```
+
+</br>
+
+Ce graphique indique la performance de chaque pays en fesant un ratio du nombre de médailles obtenus pour le nombre d'athlètes envoyés.
+
+Il est remarquable de constater que les pays au-dessus de la ligne de tendance sous-performent par rapport à cette moyenne, tandis que ceux en dessous sur-performent (notamment la Russie, les États-Unis et l'Allemagne), alors que ceux au dessus de la ligne sous-performent.
+
+</br><hr width="20%" /></br>
+
+#### Conclusion :
+Nous avons vu que les résulats aux Jeux Olympiques ne sont pas homogènes, il y a un grand nombre de pays ayant peu de participation alors qu'une poignée à énormément de participation. Il est important de garder ces résultats en tête dans les prochaines analyses afin de mieux les apréhender.
+
+</br><hr /></br>
 
 ## 2. La différence des sessions d'hiver et d'été
 
-Introduction
+Pour poursuivre notre analyse, nous allons nous concentrer sur la deuxième question : "Comment les Jeux Olympiques d'été se différencient-ils des Jeux Olympiques d'hiver ?"
+
+Cette question vise à examiner les différences et similitudes entre les éditions estivales et hivernales des Jeux Olympiques. Cette analyse nous permettra de mieux comprendre les spécificités de chaque saison olympique et d'identifier les tendances uniques qui caractérisent les Jeux d'été et d'hiver. De plus, cette étude fournira un contexte précieux pour les questions suivantes, en mettant en lumière les variations saisonnières dans l'organisation et les performances des Jeux Olympiques.
+
+</br></br>
+
+```{r Question2-A, echo=FALSE, fig.align="center", fig.width = 10}
+
+# Filter data for Summer and Winter seasons
+summer_data <- data_jo %>% distinct() %>% filter(Season == "Summer")
+winter_data <- data_jo %>% distinct() %>% filter(Season == "Winter")
+
+# Count unique athletes for each edition (Year) and Season
+summer_athletes_count <- summer_data %>%
+  group_by(Year) %>%
+  summarise(nombre_athletes = n_distinct(Name))
+
+winter_athletes_count <- winter_data %>%
+  group_by(Year) %>%
+  summarise(nombre_athletes = n_distinct(Name))
+
+combined_data <- bind_rows(
+  mutate(summer_athletes_count, Season = "Summer"),
+  mutate(winter_athletes_count, Season = "Winter")
+)
+
+# Plotting with ggplot2
+ggplot(combined_data, aes(x = Year, y = nombre_athletes, color = Season)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Année", y = "Nombre d'athlètes", color = "Session") +
+  ggtitle("Nombre d'athlètes aux Jeux Olympique d'été et d'hiver") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20))
+```
 
 </br>
 
-Graphiques et explications
+```{r Question2-B, echo=FALSE, fig.align="center", fig.width = 14}
+
+
+# Count unique athletes for each edition (Year) and Season
+summer <- summer_data %>%
+  group_by(Year) %>%
+  summarise(event = n_distinct(Event), sport = n_distinct(Sport))
+
+winter <- winter_data %>%
+  group_by(Year) %>%
+  summarise(event = n_distinct(Event), sport = n_distinct(Sport))
+
+combined_data <- bind_rows(mutate(summer, Season = "Summer"),
+                           mutate(winter, Season = "Winter"))
+
+# Plotting with ggplot2
+p1 <-
+  ggplot(combined_data, aes(x = Year, y = sport, color = Season)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Année", y = "Nombre de sports", color = "Session") +
+  theme_minimal() +
+  guides(color = "none")
+
+p2 <-
+  ggplot(combined_data, aes(x = Year, y = event, color = Season)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Année", y = "Nombre d'épreuves", color = "Session") +
+  theme_minimal() +
+  guides(color = "none")
+
+grid.arrange(
+  p1,
+  p2,
+  ncol = 2,
+  top = textGrob("Evolution du nombre de sport et d'epreuves", gp = gpar(fontsize =
+                                                                           28))
+)
+```
 
 </br>
 
-Conclusion
+On peut clairement voir sur le premier graphique que la participation aux Jeux Olympiques d'été est nettement supérieure à celle des Jeux d'hiver. On peut également observer sur le même graphique des pics de baisse de participation qui seront expliqués dans la prochaine partie (Question 3).
+
+Les deux autres graphiques mettent en lumière une des raisons de cette disparité entre les deux sessions : le nombre de sports et d'épreuves dans chaque session. En effet, pendant la session d'été, il y a bien plus de sports que pendant celle d'hiver. Il est quand même intéressant de voir que le nombre d'épreuves et de sports augmente de la même manière, que ce soit pour les Jeux d'été ou d'hiver.
+
+
+</br><hr width="20%" /></br>
+
+```{r Question2-C, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+
+
+ratio_summer_winter <- data_jo %>%
+  group_by(Season) %>%
+  summarise(unique_athletes = n_distinct(ID)) %>%
+  spread(Season, unique_athletes) %>%
+  mutate(ratio = Summer / Winter) %>%
+  select(ratio) %>%
+  pull()
+
+data_filtered <- data_jo %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region, Season) %>%
+  summarize(unique_athletes = n_distinct(ID)) %>%
+  ungroup() %>%
+  spread(key = Season, value = unique_athletes) %>%
+  mutate(Summer = ifelse(is.na(Summer), 0, Summer),
+         Winter = ifelse(is.na(Winter), 0, Winter)) %>%
+  mutate(ratio = ifelse(Winter == 0, 100, Summer / Winter / ratio_summer_winter)) %>%
+  mutate(ratio = pmin(ratio, 10)) %>%
+  left_join(data_iso_regions, by = "region")
+
+plot_ly(
+  data = data_filtered,
+  type = 'choropleth',
+  locations = ~ ISO,
+  z = ~ ratio,
+  text = ~ region,
+  colorscale = list(c(0, 0.1, 0.5, 1), c('blue', 'pink', 'red' ,'darkred')),
+  autocolorscale = FALSE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = "Préférence de session\nété (rouge) / hiver (bleu)")
+) %>%
+  layout(
+    title = list(
+      text = "Participation aux Jeux Olympiques d'été / d'hiver par pays",
+      y = 0.99,
+      font = list(size = 24)
+    ),
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+```
 
 </br>
+
+Cette carte indique pour chaque pays le ratio d'athlètes envoyés aux Jeux Olympiques d'été et d'hiver. Le ratio de préférence est normalisé par rapport à la moyenne des pays : les pays envoient en moyenne trois fois plus d'athlètes aux Jeux Olympiques d'été qu'aux Jeux d'hiver. Il est donc logique de voir que les pays "chauds" (Amérique du Sud, Afrique, Asie du Sud-Est) ont un ratio très élevé, car ils n'envoient presque aucun athlète aux Jeux d'hiver. De la même façon, les pays "froids" (Canada, Russie, pays nordiques...) favorisent les Jeux Olympiques d'hiver.
+
+</br><hr width="20%" /></br>
+
+#### Conclusion :
+Notre analyse des Jeux Olympiques d'été et d'hiver met en évidence des différences significatives en termes de participation, de nombre de sports et d'épreuves, ainsi que des préférences des pays en fonction de leur climat. Les Jeux d'été attirent un plus grand nombre de participants et proposent une variété de sports plus large comparé aux Jeux d'hiver. Les variations saisonnières dans l'organisation et les performances des Jeux sont influencées par des facteurs géographiques et climatiques, avec les pays "chauds" favorisant les Jeux d'été et les pays "froids" favorisant les Jeux d'hiver.
+
+</br><hr /></br>
 
 ## 3. La participation à travers les âges
 
-Introduction
+Pour continuer notre analyse, nous allons nous concentrer sur la troisième question : "Comment varie le nombre d'épreuves sportives et le nombre d'athlètes participant aux Jeux Olympiques au fil du temps ?"
+
+Cette question vise à explorer l'évolution des Jeux Olympiques en termes de diversité des sports proposés et de participation des athlètes. En examinant les données historiques, nous analyserons les tendances dans l'augmentation ou la diminution du nombre d'épreuves sportives ainsi que le nombre d'athlètes participants au fil des différentes éditions des Jeux. Cette analyse nous aidera à comprendre les facteurs ayant influencé ces changements, en montrant comment l'évolution des Jeux a reflété et influencé les dynamiques du monde sportif international.
 
 </br>
 
-Graphiques et explications
+```{r Question3-A, echo=FALSE, fig.align="center", fig.width = 10}
+summer_data <-
+  data_jo %>%
+  distinct() %>%
+  filter(Season == "Summer") %>%
+  group_by(Year) %>%
+  summarise(nombre_athletes = n_distinct(Name),
+            nombre_pays = n_distinct(NOC))
+
+# Plotting with ggplot2
+ggplot(summer_data, aes(x = Year)) +
+  geom_line(aes(y = nombre_athletes), color = "darkblue") +
+  geom_point(aes(y = nombre_athletes), color = "darkblue") +
+  geom_bar(
+    aes(y = nombre_pays * 50),
+    stat = "identity",
+    alpha = 0.5,
+    fill = "green"
+  ) +
+  scale_y_continuous(name = "Nombre d'athlètes",
+                     sec.axis = sec_axis( ~ . * (1 / 50), name = "Nombre de pays")) +
+  labs(x = "Année", color = "Session") +
+  ggtitle("Nombre d'athlètes et de pays aux Jeux Olympiques d'été") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20))
+```
+
+<br>
+
+Ce graphique est intéressant car il permet de constater que les Jeux Olympiques n'ont pas eu lieu pendant la Seconde Guerre mondiale (1939-1945). De plus, il y a eu trois baisses significatives de la participation aux Jeux Olympiques d'été, en 1904, 1932, 1956, et de 1976 à 1984. Pendant ces six éditions, divers problèmes ont empêché un certain nombre de nations de participer aux événements :
+
+- En 1904 et 1932 : Les Jeux Olympiques ont été organisés dans des villes des États-Unis : Saint-Louis et Los Angeles. Ce choix de localisation impliquait un voyage long et difficile pour les pays participants, principalement européens à cette époque.
+
+- En 1956 : De nombreux conflits ont dissuadé de nombreux athlètes de participer : l'affaire du Canal de Suez, le conflit entre l'Égypte et Israël, la violence en Afrique du Nord, etc. De plus, la ville hôte était Melbourne en Australie, éloignée du continent européen qui envoyait le plus de participants.
+
+- De 1976 à 1984 : Il y a eu des boycotts des Jeux Olympiques dans le contexte de la guerre froide. Le boycott des Jeux Olympiques organisés en Russie ou aux États-Unis permettait de protester contre les événements de l'époque. Il est intéressant de voir que c'est seulement à cette occasion qu'il y a eu une vraie baisse du nombre de pays participants.
+
+La carte ci-dessous indique les nations ayant boycotté (partiellement ou complètement) les éditions des Jeux Olympiques d'été pendant cette période :
 
 </br>
 
-Conclusion
+<p align="center">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Olympic_boycotts_1976_1980_.png" width="80%"/>
+</p>
+
+</br><hr width="20%" /></br>
+
+```{r Question3-B, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+# Count unique athletes for each edition (Year) and Season
+athletes_count_year <- data_jo %>%
+  distinct() %>%
+  group_by(Year, Season) %>%
+  #filter(Season == "Summer") %>%
+  summarise(nombre_athletes = n_distinct(Name), nombre_sport = n_distinct(Sport), Season) %>%
+  distinct()
+
+# Plotting with ggplot2
+ggplot(athletes_count_year, aes(x = Year, y = nombre_athletes / nombre_sport, color = Season)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Année", y = "Nombre d'athlètes / sport", color = "Session") +
+  ggtitle("Participation aux Jeux Olympique ajusté au nombre de sports") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
+  facet_grid(. ~ Season) + 
+  guides(color = "none")
+```
 
 </br>
+
+Dans ce graphique, nous pouvons observer l'impact du nombre de sports sur la participation. En effet, lorsque nous normalisons la participation aux Jeux Olympiques par rapport au nombre de sports disponibles, nous remarquons que la participation par sport est assez similaire entre les différentes éditions.
+
+</br><hr width="20%" /></br>
+
+#### Conclusion :
+Notre analyse nous a permis de retracer l'évolution des Jeux Olympiques à travers le prisme du nombre d'épreuves sportives et de la participation des athlètes. Nous avons constaté des fluctuations significatives dans la participation, souvent influencées par des facteurs géopolitiques et logistiques, tels que les conflits mondiaux ou les choix de localisation des Jeux. Les périodes de baisse de participation, telles que les années 1904, 1932, 1956 et 1976-1984, ont été marquées par des événements historiques majeurs et des boycotts politiques. Malgré ces fluctuations, notre analyse révèle une constante : une participation relativement stable par sport, suggérant une diversité maintenue malgré les défis rencontrés par les Jeux Olympiques au fil du temps.
+
+</br><hr /></br>
 
 ## 4. L'impact du pays hôte
 
@@ -114,13 +521,13 @@ Introduction
 
 </br>
 
-Graphiques et explications
+Graphiques
 
-</br>
+</br><hr width="20%" /></br>
 
-Conclusion
+#### Conclusion :
 
-</br>
+</br><hr /></br>
 
 ## 5. L'impact du niveau économique
 
@@ -128,13 +535,13 @@ Introduction
 
 </br>
 
-Graphiques et explications
+Graphiques
 
-</br>
+</br><hr width="20%" /></br>
 
-Conclusion
+#### Conclusion :
 
-</br>
+</br><hr /></br>
 
 ## 6. Les athlètes dominants
 
@@ -142,13 +549,13 @@ Introduction
 
 </br>
 
-Graphiques et explications
+Graphiques
 
-</br>
+</br><hr width="20%" /></br>
 
-Conclusion
+#### Conclusion :
 
-</br>
+</br><hr /></br>
 
 ## 7. Le physiques des athlètes
 
@@ -156,13 +563,13 @@ Introduction
 
 </br>
 
-Graphiques et explications
+Graphiques
 
-</br>
+</br><hr width="20%" /></br>
 
-Conclusion
+#### Conclusion :
 
-</br>
+</br><hr /></br>
 
 ## 8. La répartition homme / femme
 
@@ -170,13 +577,13 @@ Introduction
 
 </br>
 
-Graphiques et explications
+Graphiques
 
-</br>
+</br><hr width="20%" /></br>
 
-Conclusion
+#### Conclusion :
 
-</br>
+</br><hr /></br>
 
 ## 9. La place des femmes à travers le temps
 
@@ -184,10 +591,42 @@ Introduction
 
 </br>
 
-Graphiques et explications
+```{r Question9-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+data_filtered <- data_jo %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region, Sex) %>%
+  summarize(unique_athletes = n_distinct(ID)) %>%
+  ungroup() %>%
+  spread(key = Sex, value = unique_athletes) %>%
+  mutate(F = ifelse(is.na(F), 0, F),
+         M = ifelse(is.na(M), 0, M)) %>%
+  mutate(ratio = M / F) %>%
+  mutate(ratio = pmin(ratio, 10)) %>%
+  left_join(data_iso_regions, by = "region")
 
-</br>
+plot_ly(
+  data = data_filtered,
+  type = 'choropleth',
+  locations = ~ ISO,
+  z = ~ ratio,
+  text = ~ region,
+  colorscale = list(c(0, 0.1, 0.2,  1),
+                    c('deeppink', 'white', 'blue', 'black')),
+  autocolorscale = FALSE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = 'Ratio H / F')
+) %>%
+  layout(
+    title = 'Ratio homme / femme aux Jeux Olympiques par pays',
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+```
 
-Conclusion
+</br><hr width="20%" /></br>
 
-
+#### Conclusion :
