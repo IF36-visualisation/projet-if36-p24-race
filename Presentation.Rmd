@@ -17,11 +17,16 @@ library(tidyr)
 library(ggrepel)
 library(gridExtra)
 library(grid)
+library(readxl)
+library(GGally)
+library(RColorBrewer)
+library(tidyverse)
 ```
 
 ```{r loading data, include=FALSE}
 data_jo = read_csv('athlete_events.csv')
 data_noc_regions <- read_csv('noc_regions.csv')
+data_PIB <- read_delim('GDP_per_capita.csv', delim = ';')
 data_iso_regions <- read_csv('iso_regions.csv')
 ```
 
@@ -537,6 +542,68 @@ Introduction
 
 Graphiques
 
+```{r Question5-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Renommer la première colonne de data_PIB en "Country" pour la jointure
+names(data_PIB)[1] <- "Country"
+
+# Préparer les données des Jeux Olympiques
+data_jo <- data_jo %>%
+  filter(!is.na(Medal)) %>%
+  group_by(NOC, Year) %>%
+  summarise(total_medals = n()) %>%
+  ungroup()
+
+# Préparer les données de PIB par habitant
+data_PIB_long <- data_PIB %>%
+  pivot_longer(cols = starts_with('19') | starts_with('20') | starts_with('21'), names_to = "Year", values_to = "GDP_per_capita") %>%
+  mutate(Year = as.numeric(Year)) %>%
+  mutate(GDP_per_capita = as.numeric(GDP_per_capita))  # Assurez-vous que les valeurs de GDP_per_capita sont numériques
+
+# Fusionner les données des JO avec les régions NOC
+data_jo <- data_jo %>%
+  left_join(data_noc_regions, by = "NOC")
+
+# Fusionner les données des médailles avec les données de PIB par habitant
+data_combined <- data_jo %>%
+  left_join(data_PIB_long, by = c("region" = "Country", "Year"))
+
+# Filtrer les données complètes
+data_combined <- data_combined %>%
+  filter(!is.na(GDP_per_capita))
+
+# Créer des tranches de PIB par habitant en utilisant des quantiles
+data_combined <- data_combined %>%
+  mutate(GDP_bin = cut(GDP_per_capita, breaks = quantile(GDP_per_capita, probs = seq(0, 1, by = 0.1), na.rm = TRUE), include.lowest = TRUE))
+
+# Modifier les étiquettes des tranches de PIB
+labels <- c("<1000", "1000-2000", "2000-3000", "3000-4000", "4000-5000", "5000-6000", "6000-7000", "7000-8000", "8000-9000", ">=9000")
+
+# Créer un box plot avec Plotly
+p <- plot_ly(data_combined, y = ~total_medals, x = ~GDP_bin, type = 'box', boxpoints = 'all',
+             jitter = 0.3, pointpos = -1.8, marker = list(color = 'rgba(152, 0, 0, .8)'),
+             text = ~paste('Country:', region, '<br>Year:', Year)) %>%
+  layout(title = "Distribution des médailles par tranches de PIB par habitant",
+         xaxis = list(title = "Tranches de PIB par habitant (USD)", 
+                      categoryorder = "array",
+                      categoryarray = unique(data_combined$GDP_bin),
+                      ticktext = labels,
+                      tickvals = unique(data_combined$GDP_bin)),
+         yaxis = list(title = "Nombre total de médailles"))
+
+# Ajouter des annotations
+annotations <- list(
+  list(x = 0.5, y = 1, xref = "paper", yref = "paper", text = "", 
+       showarrow = FALSE, xanchor = "center", yanchor = "top", font = list(size = 20))
+)
+
+p <- p %>% layout(annotations = annotations)
+
+# Afficher le graphique
+p
+
+```
+
+
 </br><hr width="20%" /></br>
 
 #### Conclusion :
@@ -564,8 +631,175 @@ Introduction
 </br>
 
 Graphiques
+```{r Question7_graphe1, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+# Charger les données
+data_jo <- read_csv("athlete_events.csv")
+# Préparer les données des Jeux Olympiques
+data_filtered <- data_jo %>%
+  distinct() %>%
+  filter(!is.na(Medal)) %>%
+  left_join(data_noc_regions, by = "NOC")
+
+# Créer des tranches d'âge
+data_filtered <- data_filtered %>%
+  mutate(Age_bin = cut(Age, 
+                       breaks = seq(10, 60, by = 10), 
+                       right = FALSE, 
+                       include.lowest = TRUE))
+
+# Filtrer les données pour inclure seulement les lignes avec un âge disponible
+data_filtered <- data_filtered %>%
+  filter(!is.na(Age_bin))
+
+# Agréger les données pour compter le nombre de médailles par tranche d'âge
+medals_per_age_bin <- data_filtered %>%
+  count(Age_bin, Medal)
+
+# Créer un graphique en barres empilées pour les médailles par tranche d'âge
+ggplot(medals_per_age_bin, aes(x = Age_bin, y = n, fill = Medal)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Distribution des médailles olympiques par tranche d'âge",
+       x = "Tranche d'âge (années)",
+       y = "Nombre de médailles",
+       fill = "Type de médaille") +
+  scale_fill_manual(values = c("Gold" = "#FFD700", "Silver" = "#C0C0C0", "Bronze" = "#CD7F32")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 24))
+
+# Afficher le graphique
+
+
+```
+
+
 
 </br><hr width="20%" /></br>
+
+```{r Question7-graphe2, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Importation des données
+
+
+# Suppression des valeurs manquantes de Height et Weight
+data_jo <- data_jo %>% filter(!is.na(Height) & !is.na(Weight))
+
+# Création d'une variable Age_group pour regrouper les âges en tranches
+data_jo <- data_jo %>%
+  mutate(Age_group = cut(Age, breaks = c(10, 20, 30, 40, 50, 60), 
+                         labels = c("10-20", "20-30", "30-40", "40-50", "51-60"),
+                         include.lowest = TRUE)) %>%
+  filter(!is.na(Age_group) & Age_group != "51-60")
+
+# Réordonner les tranches d'âge
+data_jo$Age_group <- factor(data_jo$Age_group, levels = c("10-20", "20-30", "30-40", "40-50"))
+
+# Calculer la répartition des athlètes par tranche d'âge
+age_group_counts <- data_jo %>% count(Age_group)
+
+# Création du graphique en barres avec ggplot
+p <- ggplot(data = age_group_counts, aes(x = Age_group, y = n, fill = Age_group)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = n), vjust = -0.5, size = 3) +
+  labs(title = "Répartition des athlètes olympiques par tranche d'âge",
+       x = "Tranche d'âge",
+       y = "Nombre d'athlètes") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
+
+# Afficher le graphique
+print(p)
+
+```
+
+</br><hr width="20%" /></br>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+
+# Importation des données
+data <- read_csv("athlete_events.csv")
+
+# Filtrer les athlètes médaillés
+medalists <- data %>%
+  filter(!is.na(Medal)) %>%
+  drop_na(Height, Weight)
+
+# Créer une fonction pour générer le graphique de chaque sport avec une couleur spécifique
+create_sport_plot <- function(data, point_color) {
+  # Ajuster un modèle de régression linéaire
+  fit <- lm(Weight ~ Height, data = data)
+  
+  plot_ly(data, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
+          color = ~Sport, colors = point_color, opacity = 0.6) %>%
+    add_trace(x = ~Height, y = ~fitted(fit),
+              mode = 'lines', line = list(color = 'black')) %>%
+    layout(title = "Relation entre la taille et le poids des athlètes médaillés",
+           xaxis = list(title = "Taille (cm)"),
+           yaxis = list(title = "Poids (kg)"))
+}
+
+# Obtenir une liste de couleurs pour chaque sport
+unique_sports <- unique(medalists$Sport)
+color_palette <- colorRampPalette(brewer.pal(11, "Set3"))(length(unique_sports))
+
+# Créer le graphique en nuage de points pour tous les sports
+plot_all_sports <- create_sport_plot(medalists, color_palette)
+
+# Afficher le graphique
+plot_all_sports
+
+
+```
+</br><hr width="20%" /></br>
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+
+
+# Filtrer les athlètes médaillés pour les trois sports
+sports <- c("Swimming", "Athletics", "Judo")
+medalists <- data_jo %>%
+  filter(!is.na(Medal) & Sport %in% sports) %>%
+  drop_na(Height, Weight)
+
+# Fonction pour créer un graphique pour un sport donné avec des couleurs spécifiques
+create_sport_plot <- function(sport_name, point_color) {
+  sport_data <- medalists %>% filter(Sport == sport_name)
+  plot_ly(sport_data, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
+          marker = list(color = point_color, opacity = 0.6)) %>%
+    add_trace(x = ~Height, y = ~fitted(lm(Weight ~ Height, data_jo = sport_data)),
+              mode = 'lines', line = list(color = 'black')) %>%
+    layout(title = paste("Relation entre la taille et le poids des athlètes médaillés en", sport_name),
+           xaxis = list(title = "Taille (cm)"),
+           yaxis = list(title = "Poids (kg)"),
+           showlegend = FALSE)
+}
+
+# Créer les graphiques pour chaque sport avec les couleurs spécifiées
+plot_swimming <- create_sport_plot("Swimming", "blue")
+plot_athletics <- create_sport_plot("Athletics", "brown")
+plot_judo <- create_sport_plot("Judo", "red")
+
+# Afficher les graphiques
+plot_swimming
+
+```
+
+</br><hr width="20%" /></br>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
+
+plot_athletics
+
+```
+</br><hr width="20%" /></br>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
+plot_judo
+```
+
+
 
 #### Conclusion :
 
@@ -628,5 +862,131 @@ plot_ly(
 ```
 
 </br><hr width="20%" /></br>
+```{r Question9-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+
+# Filter data for Summer and Winter seasons
+summer_data <- data_jo %>% distinct() %>% filter(Season == "Summer")
+winter_data <- data_jo %>% distinct() %>% filter(Season == "Winter")
+
+# Count unique female athletes for each edition (Games)
+summer_female_count <- summer_data %>% filter(Sex == "F") %>% group_by(Games) %>% summarise(Nombre_femmes = n_distinct(Name))
+winter_female_count <- winter_data %>% filter(Sex == "F") %>% group_by(Games) %>% summarise(Nombre_femmes = n_distinct(Name))
+
+combined_female_data <- bind_rows(
+  mutate(summer_female_count, Season = "Summer"),
+  mutate(winter_female_count, Season = "Winter")
+)
+
+# Calculer la proportion de femmes parmi les athlètes pour chaque édition des Jeux Olympiques
+proportion_femmes <- data_jo %>%
+  group_by(Games) %>%
+  summarise(Proportion_femmes = mean(Sex == "F", na.rm = TRUE))
+
+# Fusionner les données de nombre total de femmes et de proportion de femmes
+data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Games")
+
+# Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
+plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+  add_trace(y = ~Nombre_femmes, name = "Nombre de femmes ", yaxis = "y2", type = 'scatter', mode = 'lines', line = list(color = 'red')) %>%
+  layout(title = "Evolution de la Participation des femmes aux Jeux Olympiques",
+         xaxis = list(title = "Édition des Jeux Olympiques"),
+         yaxis = list(title = "Proportion de femmes parmi les athlètes", side = "left"),
+         yaxis2 = list(title = "Nombre de femmes", side = "right", overlaying = "y"),
+         hovermode = "closest",
+         showlegend = TRUE,
+         legend = list(orientation = "h"))
+
+
+
+```
+
+</br><hr width="20%" /></br>
+
+```{r Question9-C,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Filtrer les données pour les médailles et regrouper par année et sexe
+medals_by_gender <- data_jo %>%
+  filter(!is.na(Medal)) %>%
+  group_by(Year, Sex) %>%
+  summarise(total_medals = n(), .groups = 'drop')
+
+# Créer un graphique en barres interactif avec Plotly
+p <- plot_ly(medals_by_gender, x = ~Year, y = ~total_medals, color = ~Sex, type = 'bar',
+             text = ~paste('Year:', Year, '<br>Total Medals:', total_medals, '<br>Sex:', Sex),
+             hoverinfo = 'text') %>%
+  layout(title = "Répartition des médailles par genre aux Jeux Olympiques",
+         xaxis = list(title = "Année des Jeux Olympiques"),
+         yaxis = list(title = "Nombre total de médailles"),
+         barmode = 'group')
+
+# Ajouter des étiquettes sur les barres
+p <- p %>% add_annotations(x = ~Year, y = ~total_medals, text = ~total_medals,
+                           showarrow = FALSE, font = list(size = 10), 
+                           yshift = 5)
+
+# Modifier les couleurs
+p <- p %>% layout(colorway = c('#1f77b4', '#ff7f0e'))
+
+# Afficher le graphique
+p
+
+
+```
+
+</br><hr width="20%" /></br>
+
+```{r Question9-D,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+
+
+# Préparer les données des Jeux Olympiques
+data_jo <- data_jo %>%
+  filter(Sex == "F") %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region) %>%
+  summarize(total_female_athletes = n_distinct(ID)) %>%
+  ungroup()
+
+# Fusionner les données avec les codes ISO
+female_participation_map <- data_jo %>%
+  left_join(data_iso_regions, by = "region") %>%
+  filter(!is.na(ISO))
+
+# Renommer la colonne pour correspondre à Plotly
+female_participation_map <- female_participation_map %>%
+  rename(iso_alpha = ISO)
+
+# Créer une carte choroplèthe avec Plotly
+map <- plot_ly(
+  data = female_participation_map,
+  type = 'choropleth',
+  locations = ~iso_alpha,
+  z = ~total_female_athletes,
+  text = ~region,
+  colorscale = 'Blues',
+  autocolorscale = FALSE,
+  reversescale = TRUE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = 'Nombre de participantes féminines')
+) %>%
+  layout(
+    title = 'Participation féminine aux Jeux Olympiques par pays',
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+
+# Afficher la carte
+map
+
+```
+
+</br><hr width="20%" /></br>
+
+
+
 
 #### Conclusion :
