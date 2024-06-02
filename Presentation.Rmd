@@ -21,6 +21,7 @@ library(readxl)
 library(GGally)
 library(RColorBrewer)
 library(tidyverse)
+
 ```
 
 ```{r loading data, include=FALSE}
@@ -95,7 +96,7 @@ labels_bins <- c("0-1", "1-10", "10-100", "100-1000", "1000+")
 # Create histogram with defined bins
 ggplot(country_medal_counts, aes(x = cut(total_medals, bins, labels = labels_bins))) +
   geom_bar(stat = "count", fill = "skyblue", color = "black") +
-  labs(x = "Number of Medals", y = "Number of Countries", title = "Distribution of Countries by Medal Counts") +
+  labs(x = "Nombre de Médailles", y = "Nombre de pays", title = "Distribution du nombre des médailles") +
   scale_x_discrete(labels = labels_bins) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5, size = 18))
@@ -541,7 +542,6 @@ Introduction
 </br>
 
 Graphiques
-
 ```{r Question5-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 # Renommer la première colonne de data_PIB en "Country" pour la jointure
 names(data_PIB)[1] <- "Country"
@@ -603,8 +603,27 @@ p
 
 ```
 
+Le graphique met en évidence la répartition des médailles remportées aux Jeux Olympiques selon les tranches de PIB par habitant, organisées en déciles. Plusieurs observations et analyses peuvent être tirées de ces données.
+
+Disparité des Médailles :
+Les tranches de PIB les plus élevées, telles que celles situées entre 777 et 896 USD et entre 896 et 1401 USD, affichent généralement un nombre plus élevé de médailles par rapport aux tranches de PIB plus basses. Par exemple, les pays ayant un PIB par habitant compris entre 777 et 896 USD présentent une diversité plus large de médailles, certains accumulant plus de 80 médailles.
+
+Médianes et Quartiles :
+Les médianes, représentées par les lignes centrales des boîtes (boxplots), restent relativement basses pour toutes les tranches, suggérant que la majorité des pays remportent un nombre modeste de médailles. Les quartiles inférieurs et supérieurs révèlent également que même dans les tranches de PIB les plus élevées, une grande majorité des pays obtiennent un nombre relativement faible de médailles.
+
+Outliers :
+Des points de données sont dispersés au-dessus des boîtes (outliers), notamment dans les tranches de PIB les plus élevées. Ces outliers représentent des pays ayant connu un succès exceptionnel aux Jeux Olympiques malgré un PIB par habitant potentiellement modeste. Les tranches de PIB plus élevées affichent généralement davantage d'outliers, suggérant ainsi une corrélation entre un PIB plus élevé et un succès olympique accru.
+
+Interprétation des Tranches de PIB :
+La distribution suggère une corrélation positive entre un PIB par habitant plus élevé et un succès olympique accru, bien que cette relation ne soit pas linéaire et qu'il existe de nombreuses variations au sein de chaque tranche. Certaines tranches de PIB intermédiaires, telles que celles situées entre 576 et 696 USD, présentent également une dispersion relativement élevée des médailles, indiquant que le PIB n'est pas le seul facteur déterminant le succès olympique.
+
 
 </br><hr width="20%" /></br>
+
+
+
+</br><hr width="20%" /></br>
+
 
 #### Conclusion :
 
@@ -628,9 +647,14 @@ Graphiques
 
 Introduction
 
+Pour poursuivre notre analyse des Jeux Olympiques, nous allons nous pencher sur la question suivante : "Comment les caractéristiques physiques des athlètes olympiques varient-elles en fonction de leur âge ?"
+
+Cette question vise à explorer la relation entre l'âge des athlètes et leurs caractéristiques physiques, telles que la taille et le poids. En examinant les données des athlètes olympiques, nous analyserons comment ces caractéristiques affectent la remportée des médailles, en mettant en lumière les tendances et les différences observées dans les différentes tranches d'âge. Cette analyse nous permettra de mieux comprendre l'impact de l'âge sur les performances physiques des athlètes et d'identifier les caractéristiques physiques prédominantes dans les différentes catégories d'âge.
+
 </br>
 
 Graphiques
+
 ```{r Question7_graphe1, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 
 # Charger les données
@@ -657,8 +681,9 @@ medals_per_age_bin <- data_filtered %>%
   count(Age_bin, Medal)
 
 # Créer un graphique en barres empilées pour les médailles par tranche d'âge
-ggplot(medals_per_age_bin, aes(x = Age_bin, y = n, fill = Medal)) +
-  geom_bar(stat = "identity") +
+p <- ggplot(medals_per_age_bin, aes(x = Age_bin, y = n, fill = Medal)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(aes(label = n), position = position_stack(vjust = 0.5), size = 3) +
   labs(title = "Distribution des médailles olympiques par tranche d'âge",
        x = "Tranche d'âge (années)",
        y = "Nombre de médailles",
@@ -669,9 +694,18 @@ ggplot(medals_per_age_bin, aes(x = Age_bin, y = n, fill = Medal)) +
   theme(plot.title = element_text(hjust = 0.5, size = 24))
 
 # Afficher le graphique
-
+print(p)
 
 ```
+
+Ce graphique est intéressant car il montre la distribution des médailles olympiques par tranche d'âge. On peut voir que les athlètes de la tranche d'âge 20-30 ans sont les plus représentés parmi les médaillés, suivis par les athlètes de la tranche d'âge 30-40 ans. Cela suggère que la plupart des athlètes médaillés sont dans la fleur de l'âge, ce qui est cohérent avec les exigences physiques et mentales des compétitions olympiques.
+
+Nous remarquons également que le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela suggère une performance sportive équilibrée tout au long des âges. Ainsi, quel que soit le groupe d'âge, les athlètes ont des chances similaires de remporter des médailles, bien que cela puisse être influencé par le nombre d'athlètes dans chaque catégorie.
+
+
+Dans le but d'éviter tout biais lié à la tranche d'âge la plus médaillée, nous allons maintenant examiner la répartition des athlètes olympiques par tranche d'âge pour mieux comprendre la diversité des participants aux Jeux Olympiques et pour vérifier si le grand nombre de médailles dans la tranche d'âge 20-30 ans est dû à une plus grande participation dans cette catégorie ou à des caractéristiques physique spécifiques des athlètes de cette tranche d'âge.
+
+
 
 
 
@@ -713,7 +747,15 @@ print(p)
 
 ```
 
+Ce graphique montre la répartition des athlètes olympiques par tranche d'âge. On peut voir que la tranche d'âge la plus représentée est celle des 20-30 ans, suivie de près par la tranche d'âge des 30-40 ans. Cela suggère que la majorité des athlètes olympiques se situent dans la tranche d'âge la plus active et la plus performante sur le plan physique. Cela est cohérent avec les exigences physiques et mentales des compétitions olympiques, qui nécessitent souvent un pic de performance et de condition physique.
+
+Nous constatons que la tranche d'âge 20-30 ans est la plus représentée  à la fois parmi les athlètes olympiques et parmi les médaillés avec un totale de 139 947. Cela suggère que cette tranche d'âge est particulièrement compétitive et performante dans les compétitions olympiques. Cependant, il est important de noter que les athlètes de différentes tranches d'âge ont des chances équilibrées de remporter des médailles, ce qui souligne la diversité et l'équité des Jeux Olympiques en termes de participation et de performances.
+
+En revenant à notre question du graphe précédent, nous pouvons maintenant assumer que le grand nombre de médailles dans la tranche d'âge 20-30 ans est dû à une plus grande participation dans cette catégorie, ainsi que des caractéristiques physiques spécifiques des athlètes de cette tranche d'âge.
+
 </br><hr width="20%" /></br>
+
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
 
@@ -750,7 +792,19 @@ plot_all_sports <- create_sport_plot(medalists, color_palette)
 plot_all_sports
 
 
+
 ```
+
+
+Ce graphique est très important car il montre la relation entre la taille et le poids des athlètes médaillés aux Jeux Olympiques. Chaque point représente un athlète médaillé, avec la couleur indiquant le sport dans lequel il a remporté sa médaille. La ligne noire représente le modèle de régression linéaire ajusté pour la relation entre la taille et le poids des athlètes. 
+
+Nous remarquons que la plupart des points sont regroupés autour de la ligne de régression, ce qui suggère une corrélation positive entre la taille et le poids des athlètes médaillés. Cela est cohérent avec les exigences physiques des sports olympiques, qui peuvent favoriser les athlètes plus grands et plus lourds dans certaines disciplines. Cependant, il est important de noter que la diversité des sports et des disciplines olympiques peut également permettre à des athlètes de différentes tailles et poids de réussir dans des domaines spécifiques.
+
+Les disciplines comme le basketball et le volleyball de plage semblent avoir des athlètes plus grands et plus lourds, tandis que les sports comme la gymnastique ou la course à pied montrent une tendance vers des athlètes plus petits et plus légers. La densité de points montre que la majorité des athlètes se situent entre 160-190 cm de taille et 60-90 kg de poids.
+
+Il y a des outliers avec des athlètes beaucoup plus grands ou plus lourds, indiquant des sports spécifiques avec des exigences physiques uniques (par exemple, le basketball ou le lancer de poids). Il y a une variabilité significative dans la taille et le poids des athlètes au sein de certaines disciplines, ce qui peut refléter des variations de rôles ou de positions spécifiques dans ces sports.
+
+
 </br><hr width="20%" /></br>
 
 
@@ -786,22 +840,31 @@ plot_swimming
 
 ```
 
+Dans ce graphique de nuage de points, nous examinons la relation entre la taille et le poids des athlètes médaillés dans la natation,Le graphique montre une relation positive claire entre la taille et le poids des athlètes médaillés en natation, comme l'indique la pente ascendante de la ligne de régression. Les points bleus représentant les athlètes montrent que la majorité d'entre eux se situent entre 170-190 cm de taille et 60-90 kg de poids. Cependant, il y a aussi des outliers avec des athlètes beaucoup plus grands ou plus lourds, ce qui peut indiquer des variations individuelles ou des spécialités spécifiques dans la natation. La densité de points montre que la variabilité dans la taille et le poids est moindre en natation comparé à d'autres sports, ce qui peut refléter des exigences physiques plus uniformes pour ce sport.
+
 </br><hr width="20%" /></br>
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
 
 plot_athletics
 
 ```
-</br><hr width="20%" /></br>
+
+Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en athlétisme montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. La majorité des athlètes, représentés par des points bruns, se situent entre 170-190 cm de taille et 60-95 kg de poids. Cependant, plusieurs outliers indiquent des athlètes beaucoup plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques au sein de l'athlétisme. La densité de points révèle une variabilité importante dans la taille et le poids des athlètes, soulignant les exigences physiques diversifiées de ce sport. Cette variabilité peut être attribuée aux différentes disciplines d'athlétisme, comme le lancer de poids, le saut ou la course de fond, chacune ayant des exigences physiques uniques.
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
 plot_judo
 ```
 
+Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en judo montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. Nous remarquons que le nombre d'athlètes médaillés est inférieur aux sports tels que la natation et l'athlétisme cela est du au fait que le judo est un sport de combat qui se pratique dans des catégories de poids spécifiques, ce qui peut limiter la variabilité de la taille et du poids des athlètes médaillés. Cependant, la relation entre la taille et le poids reste cohérente avec les autres sports, avec une tendance à la corrélation positive entre ces deux variables
 
+La majorité des athlètes, représentés par des points rouges, se situent entre 160-180 cm de taille et 60-90 kg de poids. Cependant, il y a des outliers avec des athlètes plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques dans le judo. La densité de points montre une variabilité significative dans la taille et le poids des athlètes, ce qui peut refléter les différentes catégories de poids et les exigences physiques spécifiques du judo. Les variations dans la taille et le poids des athlètes peuvent être stratégiques dans le judo, où la force, l'agilité et l'équilibre sont des éléments clés de la performance.
 
 #### Conclusion :
+
+Pour conclure, notre analyse nous a permis de visualiser le nombre de médailles remporté par chaque tranche d'âge, de comprendre la répartition des athlètes olympiques par tranche d'âge, et d'explorer la relation entre la taille et le poids des athlètes médaillés aux Jeux Olympiques, en mettant en évidence des tendances et des variations dans différents sports. Nous avons observé une corrélation positive entre la taille et le poids des athlètes, suggérant que les exigences physiques des sports olympiques peuvent favoriser les athlètes plus grands et plus lourds dans certaines disciplines. Cependant, nous avons également constaté des variations significatives dans la taille et le poids des athlètes au sein de chaque sport, reflétant la diversité des disciplines et des exigences physiques spécifiques. Ces variations peuvent être stratégiques dans certains sports, où la taille, le poids et d'autres caractéristiques physiques peuvent jouer un rôle clé dans la performance des athlètes. En fin de compte, notre analyse souligne l'importance de la diversité physique des athlètes olympiques et des exigences spécifiques de chaque discipline pour atteindre l'excellence sportive aux Jeux Olympiques.Nous avons constaté que la majorité des athlètes médaillés se situent dans la tranche d'âge la plus active et la plus performante sur le plan physique notamment entre 20 et 30 ans, ce qui est cohérent avec les exigences physiques et mentales des compétitions olympiques. Cependant, nous avons également observé une diversité significative dans la répartition des athlètes par tranche d'âge, soulignant l'équité et la variété des participants aux Jeux Olympiques. Enfin, notre analyse de la relation entre la taille et le poids des athlètes médaillés a révélé des tendances cohérentes dans différents sports, avec des variations significatives reflétant les exigences physiques spécifiques de chaque discipline. Ces résultats soulignent l'importance de la diversité physique des athlètes olympiques et des exigences variées des sports olympiques pour atteindre l'excellence sportive aux Jeux Olympiques.
 
 </br><hr /></br>
 
@@ -822,6 +885,12 @@ Graphiques
 ## 9. La place des femmes à travers le temps
 
 Introduction
+
+Pour porsuivre notre analyse des Jeux Olympiques, nous allons nous intéresser à la place des femmes à travers le temps. Nous allons explorer l'évolution de la participation des femmes aux Jeux Olympiques, en examinant les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Cette analyse nous permettra de mieux comprendre l'impact des Jeux Olympiques sur l'égal
+
+Cette question vise à explorer l'évolution de la participation des femmes aux Jeux Olympiques, en mettant en lumière les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Nous examinerons la proportion de femmes parmi les athlètes, les médailles remportées par les femmes, et la participation des femmes par pay et par discipline.
+
+
 
 </br>
 
@@ -861,7 +930,10 @@ plot_ly(
   )
 ```
 
+Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de femmes ayant participé aux Jeux Olympiques. Les couleurs indiquent le ratio, allant du rose (ratio faible) au bleu (ratio élevé). Les pays en blanc ontune représentation équilibrée des hommes et des femmes aux Jeux Olympiques. Nous pouvons voir que la plupart des pays ont un ratio entre 3 et 10, ce qui indique une représentation plus masculine aux Jeux Olympiques. Cependre, certains pays ont des ratios très bas, ce qui peut refléter la grande participation des femmes dans ces pays comme la chine avec un ratio de 0.91, l'ukraine 1.17 et angola 1.05. Cette carte met en lumière les disparités dans la représentation des hommes et des femmes aux Jeux Olympiques à travers le monde, soulignant les différences culturelles et sociales dans la participation des athlètes.
+
 </br><hr width="20%" /></br>
+
 ```{r Question9-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 
 
@@ -887,7 +959,7 @@ proportion_femmes <- data_jo %>%
 data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Games")
 
 # Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
-plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes, type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes,name = "La proportion de femmes ", type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
   add_trace(y = ~Nombre_femmes, name = "Nombre de femmes ", yaxis = "y2", type = 'scatter', mode = 'lines', line = list(color = 'red')) %>%
   layout(title = "Evolution de la Participation des femmes aux Jeux Olympiques",
          xaxis = list(title = "Édition des Jeux Olympiques"),
@@ -900,6 +972,8 @@ plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes, type = 'scatter', mode 
 
 
 ```
+
+Ce graphique interactif illustre l'évolution de la participation féminine aux Jeux Olympiques à travers les années. La ligne bleue représente la proportion de femmes parmi les athlètes, tandis que la ligne rouge indique le nombre total de femmes participant aux Jeux. On constate une augmentation constante de la proportion de femmes au fil des éditions, passant de moins de 10% en 1910 à plus de 40% aujourd'hui. Cette tendance reflète un mouvement positif vers une plus grande représentation des femmes dans le sport et aux Jeux Olympiques. Parallèlement, le nombre absolu de femmes participant a également augmenté, démontrant une croissance globale de la participation féminine, avec environ 5000 athlètes féminines en 2016, et une parité presque totale avec 50% des participants aux Jeux Olympiques de Tokyo 2020 étant des femmes. Cette évolution souligne les progrès significatifs accomplis dans la promotion de l'égalité des sexes dans le domaine sportif.
 
 </br><hr width="20%" /></br>
 
@@ -932,6 +1006,12 @@ p
 
 
 ```
+
+Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres bleues représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres mauves représentent le nombre total de médailles remportées par les athlètes Masculins. En analysant les données, nous pouvons observer les tendances de participation et de succès des athlètes masculins et féminins au cours des différentes éditions des Jeux Olympiques.
+
+Il est intéressant de noter que la participation des femmes aux Jeux Olympiques a considérablement augmenté au fil du temps, reflétant une évolution positive vers une plus grande égalité des genres dans le sport. Les athlètes féminines ont non seulement augmenté en nombre, mais ont également remporté un nombre croissant de médailles, démontrant leur excellence et leur compétitivité dans une variété de disciplines sportives.prenons comme exemple les jeux olympiques de 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, mais en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.
+
+Cependant, malgré ces progrès, des disparités persistent encore dans la répartition des médailles entre les athlètes masculins et féminins. Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques.
 
 </br><hr width="20%" /></br>
 
@@ -984,9 +1064,45 @@ map
 
 ```
 
+La carte choroplèthe ci-dessus illustre la participation des femmes aux Jeux Olympiques par pays, en mettant en évidence le nombre total de participantes féminines dans chaque pays. La couleur bleu plus foncées indiquent un nombre plus élevé de femmes participant aux Jeux Olympiques, tandis que les couleurs plus claires indiquent un nombre plus faible de participantes.
+
+
+Il est indéniable que les pays les plus foncés sur la carte notamment les états-Unis qui a envoyé 2315 ainsi que  la Chine qui a envoyé 1461 femmes, le Japon avec 1198 femmes, et l'Allemagne en tête de la liste européene avec 1956 femmes aux Jeux olympiques, illustrent un engagement remarquable envers la participation féminine dans le domaine sportif. De même, des nations telles que la France, avec 967 femmes, le Canada, avec 1488 femmes, et l'Australie, avec 1141 femmes, témoignent également d'une forte tradition de représentation féminine aux Jeux olympiques. Ces pays ont établi une longue tradition de soutien actif envers les athlètes féminines dans une multitude de disciplines sportives, ce qui se traduit souvent par des succès notables sur le podium. Par exemple, la Chine se distingue comme un pays avec une tradition solidement ancrée de participation féminine aux Jeux olympiques, accompagnée de performances remarquables qui se traduisent par un nombre significatif de médailles remportées par ses athlètes féminines.
+
+En revanche, certains pays plus clairs, tels que les pays africains et certains pays d'Asie et d'Amérique du Sud, ont une participation féminine relativement faible aux Jeux Olympiques. Cela peut être dû à des facteurs socio-culturels, économiques ou politiques qui limitent l'accès des femmes au sport et à la compétition internationale, tels que les inégalités de genre, le manque de ressources et de soutien, ou les restrictions culturelles ainsi que la pauvereté et le manque d'infrastructures sportives.Dans quelques pays cela est dû au problèmes de guerre et de conflits qui limitent la participation en générale et surtout des femmes aux jeux olympiques.Cependant, cela ne signifie en aucun cas que ces pays manquent de potentiel sportif ou qu'ils n'ont jamais envoyé de femmes aux Jeux olympiques. En réalité, plusieurs de ces nations abritent des athlètes féminines exceptionnelles qui ont surmonté d'innombrables obstacles pour représenter fièrement leur pays lors des Jeux olympiques et y remporter des médailles. Prenons par exemple le Maroc, qui a envoyé plus de 50 athlètes féminines aux Jeux olympiques, dont Nawal El Moutawakel, qui a décroché la première médaille d'or olympique pour le Maroc en 1984. Ces réalisations mettent en lumière l'importance cruciale de soutenir et de promouvoir la participation des femmes dans le domaine du sport. C'est un pas significatif vers la réalisation de l'égalité des genres, non seulement aux Jeux olympiques, mais aussi dans l'ensemble du monde sportif. Encourager une représentation équitable et inclusive dans le sport garantit que chaque individu, indépendamment de son genre, ait la possibilité de briller et de contribuer au succès de leur nation.
+
 </br><hr width="20%" /></br>
 
+```{r Question9-E,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 14, fig.height= 10}
+# Charger les données
+data_jo <- read_csv("athlete_events.csv")
 
+# Filtrer les données pour inclure uniquement les athlètes féminines
+data_females <- data_jo %>%
+  filter(Sex == "F")
 
+# Agréger les données par sport pour obtenir le nombre de femmes par sport
+females_per_sport <- data_females %>%
+  count(Sport)
+
+# Créer un graphique en barres montrant la répartition des femmes par sport
+ggplot(females_per_sport, aes(x = reorder(Sport, n), y = n)) +
+  geom_bar(stat = "identity", fill = "deeppink") +
+  geom_text(aes(label = n), hjust = -0.2, color = "black") +  # Ajouter les valeurs des barres
+  coord_flip() +  # Pour une meilleure lisibilité
+  labs(title = "Répartition des femmes par sport",
+       x = "Sport",
+       y = "Nombre de femmes") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 24))
+
+# Afficher le graphique
+```
+
+Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. Chaque barre représente le nombre de femmes participant à un sport spécifique, avec les sports les plus populaires en termes de participation féminine en haut du graphique. Les sports les plus représentés par les femmes incluent l'athlétisme avec 11 666 participantes, la gymnastique avec 9 129 et la natation avec 9 850. Ces disciplines, souvent pratiquées individuellement ou en équipe, attirent un grand nombre de femmes athlètes en raison de leurs exigences physiques et techniques spécifiques. En revanche, des sports comme le hockey sur gazon, le handball, le water-polo, le rugby à sept et le tir à l'arc présentent une participation féminine relativement plus faible, possiblement en raison de divers facteurs tels que la popularité du sport, les opportunités de formation et de compétition, ou les traditions culturelles. Cependant, chaque sport offre des opportunités uniques pour les femmes de s'engager, de compétitionner et de briller aux Jeux Olympiques, reflétant ainsi la diversité et l'inclusivité des disciplines sportives.
 
 #### Conclusion :
+
+En conclusion, notre analyse de la place des femmes aux Jeux Olympiques a mis en lumière l'évolution positive de la participation féminine dans le sport et aux Jeux Olympiques. Nous avons observé une augmentation constante de la proportion de femmes parmi les athlètes, passant de moins de 10% en 1910 à plus de 40% aujourd'hui, ainsi qu'une croissance du nombre absolu de femmes participant aux Jeux. Cette tendance reflète un mouvement vers une plus grande égalité des genres dans le sport et une plus grande représentation des femmes dans les compétitions internationales. Nous avons également constaté des disparités persistantes dans la répartition des médailles entre les athlètes masculins et féminins, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques. Enfin, notre analyse de la participation féminine par pays et par discipline a souligné les différences culturelles, sociales et économiques qui influent sur la représentation des femmes aux Jeux Olympiques, mettant en lumière les progrès accomplis et les défis persistants dans la promotion de l'égalité des genres dans le sport. Encourager une participation équitable et inclusive des femmes dans le sport est essentiel pour garantir que chaque individu, indépendamment de son genre, ait la possibilité de briller et de contribuer au succès de leur nation aux Jeux Olympiques et au-delà.
+
+
