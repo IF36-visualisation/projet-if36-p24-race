@@ -547,7 +547,7 @@ Graphiques
 names(data_PIB)[1] <- "Country"
 
 # Préparer les données des Jeux Olympiques
-data_jo <- data_jo %>%
+data <- data_jo %>%
   filter(!is.na(Medal)) %>%
   group_by(NOC, Year) %>%
   summarise(total_medals = n()) %>%
@@ -560,11 +560,11 @@ data_PIB_long <- data_PIB %>%
   mutate(GDP_per_capita = as.numeric(GDP_per_capita))  # Assurez-vous que les valeurs de GDP_per_capita sont numériques
 
 # Fusionner les données des JO avec les régions NOC
-data_jo <- data_jo %>%
+data <- data %>%
   left_join(data_noc_regions, by = "NOC")
 
 # Fusionner les données des médailles avec les données de PIB par habitant
-data_combined <- data_jo %>%
+data_combined <- data %>%
   left_join(data_PIB_long, by = c("region" = "Country", "Year"))
 
 # Filtrer les données complètes
@@ -653,22 +653,18 @@ Cette question vise à explorer la relation entre l'âge des athlètes et leurs 
 
 </br>
 
-Graphiques
-
 ```{r Question7_graphe1, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 
-# Charger les données
-data_jo <- read_csv("athlete_events.csv")
 # Préparer les données des Jeux Olympiques
 data_filtered <- data_jo %>%
-  distinct() %>%
   filter(!is.na(Medal)) %>%
+  distinct() %>%
   left_join(data_noc_regions, by = "NOC")
 
 # Créer des tranches d'âge
 data_filtered <- data_filtered %>%
   mutate(Age_bin = cut(Age, 
-                       breaks = seq(10, 60, by = 10), 
+                       breaks = seq(10, 50, by = 10), 
                        right = FALSE, 
                        include.lowest = TRUE))
 
@@ -679,6 +675,9 @@ data_filtered <- data_filtered %>%
 # Agréger les données pour compter le nombre de médailles par tranche d'âge
 medals_per_age_bin <- data_filtered %>%
   count(Age_bin, Medal)
+
+medals_per_age_bin$Medal <-
+  factor(medals_per_age_bin$Medal, levels = c("Gold", "Silver", "Bronze"))
 
 # Créer un graphique en barres empilées pour les médailles par tranche d'âge
 p <- ggplot(medals_per_age_bin, aes(x = Age_bin, y = n, fill = Medal)) +
@@ -705,39 +704,37 @@ Nous remarquons également que le nombre de médailles d'or, d'argent et de bron
 
 Dans le but d'éviter tout biais lié à la tranche d'âge la plus médaillée, nous allons maintenant examiner la répartition des athlètes olympiques par tranche d'âge pour mieux comprendre la diversité des participants aux Jeux Olympiques et pour vérifier si le grand nombre de médailles dans la tranche d'âge 20-30 ans est dû à une plus grande participation dans cette catégorie ou à des caractéristiques physique spécifiques des athlètes de cette tranche d'âge.
 
-
-
-
-
 </br><hr width="20%" /></br>
 
 ```{r Question7-graphe2, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-# Importation des données
-
-
-# Suppression des valeurs manquantes de Height et Weight
-data_jo <- data_jo %>% filter(!is.na(Height) & !is.na(Weight))
 
 # Création d'une variable Age_group pour regrouper les âges en tranches
-data_jo <- data_jo %>%
-  mutate(Age_group = cut(Age, breaks = c(10, 20, 30, 40, 50, 60), 
-                         labels = c("10-20", "20-30", "30-40", "40-50", "51-60"),
-                         include.lowest = TRUE)) %>%
-  filter(!is.na(Age_group) & Age_group != "51-60")
+data <- data_jo %>%
+  mutate(Age_group = cut(
+    Age,
+    breaks = c(10, 20, 30, 40, 50),
+    labels = c("10-20", "20-30", "30-40", "40-50"),
+    include.lowest = TRUE
+  )) %>%
+  filter(!is.na(Age_group))
 
-# Réordonner les tranches d'âge
-data_jo$Age_group <- factor(data_jo$Age_group, levels = c("10-20", "20-30", "30-40", "40-50"))
+medals_per_age_bin <- data %>%
+  filter(!is.na(Medal)) %>%
+  count(Age_group)
 
-# Calculer la répartition des athlètes par tranche d'âge
-age_group_counts <- data_jo %>% count(Age_group)
+ajusted_medals_per_age_bin <- data %>%
+  group_by(Age_group) %>%
+  summarize(total = n())
+
+result <- merge(medals_per_age_bin, ajusted_medals_per_age_bin, by = "Age_group")
 
 # Création du graphique en barres avec ggplot
-p <- ggplot(data = age_group_counts, aes(x = Age_group, y = n, fill = Age_group)) +
+p <- ggplot(data = result, aes(x = Age_group, y = n / total, fill = Age_group)) +
   geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = n), vjust = -0.5, size = 3) +
-  labs(title = "Répartition des athlètes olympiques par tranche d'âge",
+  geom_text(aes(label = str_c(round(n / total * 100, 1), " %")), vjust = -0.5, size = 3) +
+  labs(title = "Obtention de médaille par tranche d'âge",
        x = "Tranche d'âge",
-       y = "Nombre d'athlètes") +
+       y = "Ratio d'obtention de médaille") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         plot.title = element_text(hjust = 0.5))
@@ -759,42 +756,36 @@ En revenant à notre question du graphe précédent, nous pouvons maintenant ass
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
 
-# Importation des données
-data <- read_csv("athlete_events.csv")
 
 # Filtrer les athlètes médaillés
-medalists <- data %>%
-  filter(!is.na(Medal)) %>%
-  drop_na(Height, Weight)
+medalists <- data_jo %>%
+  drop_na(Height, Weight, Medal)
+medalists <- medalists[!duplicated(medalists$ID), ]
 
-# Créer une fonction pour générer le graphique de chaque sport avec une couleur spécifique
-create_sport_plot <- function(data, point_color) {
-  # Ajuster un modèle de régression linéaire
-  fit <- lm(Weight ~ Height, data = data)
-  
-  plot_ly(data, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
-          color = ~Sport, colors = point_color, opacity = 0.6) %>%
-    add_trace(x = ~Height, y = ~fitted(fit),
-              mode = 'lines', line = list(color = 'black')) %>%
-    layout(title = "Relation entre la taille et le poids des athlètes médaillés",
-           xaxis = list(title = "Taille (cm)"),
-           yaxis = list(title = "Poids (kg)"))
-}
+sports <- medalists %>%
+  group_by(Sport) %>%
+  summarise(count = n()) %>% filter(count > 10)
 
-# Obtenir une liste de couleurs pour chaque sport
-unique_sports <- unique(medalists$Sport)
-color_palette <- colorRampPalette(brewer.pal(11, "Set3"))(length(unique_sports))
+medalists <- medalists %>%
+  filter(Sport %in% sports$Sport)
 
-# Créer le graphique en nuage de points pour tous les sports
-plot_all_sports <- create_sport_plot(medalists, color_palette)
-
-# Afficher le graphique
-plot_all_sports
+color_palette <- colorRampPalette(brewer.pal(11, "Set3"))(nrow(sports))
 
 
+fit <- lm(Weight ~ Height, data = medalists)
 
+# Create the plot
+plot_ly(medalists, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
+        color = ~Sport, colors = color_palette, opacity = 0.6) %>%
+  add_trace(x = ~Height, y = ~fitted(fit),
+            
+            mode = 'lines', line = list(color = 'black'), showlegend = FALSE) %>%
+  layout(title = "Relation entre la taille et le poids des athlètes médaillés",
+         xaxis = list(title = "Taille (cm)"),
+         yaxis = list(title = "Poids (kg)"))
 ```
 
+</br>
 
 Ce graphique est très important car il montre la relation entre la taille et le poids des athlètes médaillés aux Jeux Olympiques. Chaque point représente un athlète médaillé, avec la couleur indiquant le sport dans lequel il a remporté sa médaille. La ligne noire représente le modèle de régression linéaire ajusté pour la relation entre la taille et le poids des athlètes. 
 
@@ -810,57 +801,36 @@ Il y a des outliers avec des athlètes beaucoup plus grands ou plus lourds, indi
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
 
-
-# Filtrer les athlètes médaillés pour les trois sports
-sports <- c("Swimming", "Athletics", "Judo")
+# Filtrer les athlètes médaillés
 medalists <- data_jo %>%
-  filter(!is.na(Medal) & Sport %in% sports) %>%
-  drop_na(Height, Weight)
+  drop_na(Height, Weight, Medal) %>%
+  filter(Sport %in% c("Swimming", "Athletics", "Judo"))
+medalists <- medalists[!duplicated(medalists$ID), ]
 
-# Fonction pour créer un graphique pour un sport donné avec des couleurs spécifiques
-create_sport_plot <- function(sport_name, point_color) {
-  sport_data <- medalists %>% filter(Sport == sport_name)
-  plot_ly(sport_data, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
-          marker = list(color = point_color, opacity = 0.6)) %>%
-    add_trace(x = ~Height, y = ~fitted(lm(Weight ~ Height, data_jo = sport_data)),
-              mode = 'lines', line = list(color = 'black')) %>%
-    layout(title = paste("Relation entre la taille et le poids des athlètes médaillés en", sport_name),
-           xaxis = list(title = "Taille (cm)"),
-           yaxis = list(title = "Poids (kg)"),
-           showlegend = FALSE)
-}
-
-# Créer les graphiques pour chaque sport avec les couleurs spécifiées
-plot_swimming <- create_sport_plot("Swimming", "blue")
-plot_athletics <- create_sport_plot("Athletics", "brown")
-plot_judo <- create_sport_plot("Judo", "red")
-
-# Afficher les graphiques
-plot_swimming
+ggplot(medalists, aes(x = Height, y = Weight, color = Sport)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = 0.5) +
+  labs(title = "Relation entre la taille et le poids des athlètes médaillés en fonction du sport",
+       x = "Taille (cm)",
+       y = "Poids (kg)") +
+  facet_wrap(~ Sport) +
+  theme_minimal() +
+  guides(color = "none")
 
 ```
+
+</br>
 
 Dans ce graphique de nuage de points, nous examinons la relation entre la taille et le poids des athlètes médaillés dans la natation,Le graphique montre une relation positive claire entre la taille et le poids des athlètes médaillés en natation, comme l'indique la pente ascendante de la ligne de régression. Les points bleus représentant les athlètes montrent que la majorité d'entre eux se situent entre 170-190 cm de taille et 60-90 kg de poids. Cependant, il y a aussi des outliers avec des athlètes beaucoup plus grands ou plus lourds, ce qui peut indiquer des variations individuelles ou des spécialités spécifiques dans la natation. La densité de points montre que la variabilité dans la taille et le poids est moindre en natation comparé à d'autres sports, ce qui peut refléter des exigences physiques plus uniformes pour ce sport.
-
-</br><hr width="20%" /></br>
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
-
-plot_athletics
-
-```
 
 Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en athlétisme montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. La majorité des athlètes, représentés par des points bruns, se situent entre 170-190 cm de taille et 60-95 kg de poids. Cependant, plusieurs outliers indiquent des athlètes beaucoup plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques au sein de l'athlétisme. La densité de points révèle une variabilité importante dans la taille et le poids des athlètes, soulignant les exigences physiques diversifiées de ce sport. Cette variabilité peut être attribuée aux différentes disciplines d'athlétisme, comme le lancer de poids, le saut ou la course de fond, chacune ayant des exigences physiques uniques.
 
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}  
-plot_judo
-```
-
 Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en judo montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. Nous remarquons que le nombre d'athlètes médaillés est inférieur aux sports tels que la natation et l'athlétisme cela est du au fait que le judo est un sport de combat qui se pratique dans des catégories de poids spécifiques, ce qui peut limiter la variabilité de la taille et du poids des athlètes médaillés. Cependant, la relation entre la taille et le poids reste cohérente avec les autres sports, avec une tendance à la corrélation positive entre ces deux variables
 
 La majorité des athlètes, représentés par des points rouges, se situent entre 160-180 cm de taille et 60-90 kg de poids. Cependant, il y a des outliers avec des athlètes plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques dans le judo. La densité de points montre une variabilité significative dans la taille et le poids des athlètes, ce qui peut refléter les différentes catégories de poids et les exigences physiques spécifiques du judo. Les variations dans la taille et le poids des athlètes peuvent être stratégiques dans le judo, où la force, l'agilité et l'équilibre sont des éléments clés de la performance.
+
+</br><hr width="20%" /></br>
 
 #### Conclusion :
 
@@ -936,14 +906,13 @@ Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de fem
 
 ```{r Question9-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 
-
 # Filter data for Summer and Winter seasons
 summer_data <- data_jo %>% distinct() %>% filter(Season == "Summer")
 winter_data <- data_jo %>% distinct() %>% filter(Season == "Winter")
 
 # Count unique female athletes for each edition (Games)
-summer_female_count <- summer_data %>% filter(Sex == "F") %>% group_by(Games) %>% summarise(Nombre_femmes = n_distinct(Name))
-winter_female_count <- winter_data %>% filter(Sex == "F") %>% group_by(Games) %>% summarise(Nombre_femmes = n_distinct(Name))
+summer_female_count <- summer_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
+winter_female_count <- winter_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
 
 combined_female_data <- bind_rows(
   mutate(summer_female_count, Season = "Summer"),
@@ -952,14 +921,14 @@ combined_female_data <- bind_rows(
 
 # Calculer la proportion de femmes parmi les athlètes pour chaque édition des Jeux Olympiques
 proportion_femmes <- data_jo %>%
-  group_by(Games) %>%
+  group_by(Year) %>%
   summarise(Proportion_femmes = mean(Sex == "F", na.rm = TRUE))
 
 # Fusionner les données de nombre total de femmes et de proportion de femmes
-data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Games")
+data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Year")
 
 # Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
-plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes,name = "La proportion de femmes ", type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+plot_ly(data_femmes, x = ~Year, y = ~Proportion_femmes,name = "La proportion de femmes ", type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
   add_trace(y = ~Nombre_femmes, name = "Nombre de femmes ", yaxis = "y2", type = 'scatter', mode = 'lines', line = list(color = 'red')) %>%
   layout(title = "Evolution de la Participation des femmes aux Jeux Olympiques",
          xaxis = list(title = "Édition des Jeux Olympiques"),
@@ -967,9 +936,8 @@ plot_ly(data_femmes, x = ~Games, y = ~Proportion_femmes,name = "La proportion de
          yaxis2 = list(title = "Nombre de femmes", side = "right", overlaying = "y"),
          hovermode = "closest",
          showlegend = TRUE,
-         legend = list(orientation = "h"))
-
-
+         legend = list(x = 0, y = 1, xanchor = "left", yanchor = "top")
+         )
 
 ```
 
@@ -984,25 +952,20 @@ medals_by_gender <- data_jo %>%
   group_by(Year, Sex) %>%
   summarise(total_medals = n(), .groups = 'drop')
 
-# Créer un graphique en barres interactif avec Plotly
-p <- plot_ly(medals_by_gender, x = ~Year, y = ~total_medals, color = ~Sex, type = 'bar',
-             text = ~paste('Year:', Year, '<br>Total Medals:', total_medals, '<br>Sex:', Sex),
-             hoverinfo = 'text') %>%
-  layout(title = "Répartition des médailles par genre aux Jeux Olympiques",
-         xaxis = list(title = "Année des Jeux Olympiques"),
-         yaxis = list(title = "Nombre total de médailles"),
-         barmode = 'group')
-
-# Ajouter des étiquettes sur les barres
-p <- p %>% add_annotations(x = ~Year, y = ~total_medals, text = ~total_medals,
-                           showarrow = FALSE, font = list(size = 10), 
-                           yshift = 5)
-
-# Modifier les couleurs
-p <- p %>% layout(colorway = c('#1f77b4', '#ff7f0e'))
-
-# Afficher le graphique
-p
+ggplot(medals_by_gender, aes(
+  x = Year,
+  y = total_medals,
+  fill  = factor(Sex, levels = c("M", "F"))
+)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Répartition des médailles par genre aux Jeux Olympiques",
+       x = "Année",
+       y = "Ratio des genres",
+       fill = "Genres") +
+  scale_fill_manual(values =  c("M" = "lightblue", "F" = "pink")) +
+    theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
+  guides(title = "none")
 
 
 ```
@@ -1020,7 +983,7 @@ Cependant, malgré ces progrès, des disparités persistent encore dans la répa
 
 
 # Préparer les données des Jeux Olympiques
-data_jo <- data_jo %>%
+data <- data_jo %>%
   filter(Sex == "F") %>%
   distinct() %>%
   left_join(data_noc_regions, by = "NOC") %>%
@@ -1029,7 +992,7 @@ data_jo <- data_jo %>%
   ungroup()
 
 # Fusionner les données avec les codes ISO
-female_participation_map <- data_jo %>%
+female_participation_map <- data %>%
   left_join(data_iso_regions, by = "region") %>%
   filter(!is.na(ISO))
 
@@ -1074,29 +1037,47 @@ En revanche, certains pays plus clairs, tels que les pays africains et certains 
 </br><hr width="20%" /></br>
 
 ```{r Question9-E,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 14, fig.height= 10}
-# Charger les données
-data_jo <- read_csv("athlete_events.csv")
 
-# Filtrer les données pour inclure uniquement les athlètes féminines
 data_females <- data_jo %>%
-  filter(Sex == "F")
+  filter(Sex == "F")  %>%
+  count(Sport, name = "Femmes")
 
-# Agréger les données par sport pour obtenir le nombre de femmes par sport
-females_per_sport <- data_females %>%
-  count(Sport)
+data_males <- data_jo %>%
+  filter(Sex == "M")  %>%
+  count(Sport, name = "Hommes")
 
-# Créer un graphique en barres montrant la répartition des femmes par sport
-ggplot(females_per_sport, aes(x = reorder(Sport, n), y = n)) +
-  geom_bar(stat = "identity", fill = "deeppink") +
-  geom_text(aes(label = n), hjust = -0.2, color = "black") +  # Ajouter les valeurs des barres
-  coord_flip() +  # Pour une meilleure lisibilité
-  labs(title = "Répartition des femmes par sport",
+data <- merge(data_females, data_males, by = "Sport")%>%
+  mutate(ratio = Femmes / Hommes) %>%
+  filter(Femmes + Hommes > 100)
+
+# Reorder the levels of Sport based on the ratio
+data <- data[order(data$ratio),]
+
+# Reshape the data into long format
+data_long <-
+  tidyr::pivot_longer(
+    data,
+    cols = c(Femmes, Hommes),
+    names_to = "Gender",
+    values_to = "Count"
+  )
+
+# Create the stacked bar plot
+ggplot(data_long, aes(
+  x = factor(Sport, levels = data$Sport),
+  y = Count,
+  fill  = factor(Gender, levels = c("Hommes", "Femmes"))
+)) +
+  geom_bar(stat = "identity", position = "fill") +
+  coord_flip() +
+  labs(title = "Distribution of Male and Female Athletes by Sport",
        x = "Sport",
-       y = "Nombre de femmes") +
+       y = "Ratio des genres",
+       fill = "Genres") +
+  scale_fill_manual(values =  c("Hommes" = "lightblue", "Femmes" = "pink")) +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 24))
-
-# Afficher le graphique
+  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
+  guides(title = "none")
 ```
 
 Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. Chaque barre représente le nombre de femmes participant à un sport spécifique, avec les sports les plus populaires en termes de participation féminine en haut du graphique. Les sports les plus représentés par les femmes incluent l'athlétisme avec 11 666 participantes, la gymnastique avec 9 129 et la natation avec 9 850. Ces disciplines, souvent pratiquées individuellement ou en équipe, attirent un grand nombre de femmes athlètes en raison de leurs exigences physiques et techniques spécifiques. En revanche, des sports comme le hockey sur gazon, le handball, le water-polo, le rugby à sept et le tir à l'arc présentent une participation féminine relativement plus faible, possiblement en raison de divers facteurs tels que la popularité du sport, les opportunités de formation et de compétition, ou les traditions culturelles. Cependant, chaque sport offre des opportunités uniques pour les femmes de s'engager, de compétitionner et de briller aux Jeux Olympiques, reflétant ainsi la diversité et l'inclusivité des disciplines sportives.
