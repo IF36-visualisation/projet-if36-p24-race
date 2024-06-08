@@ -537,13 +537,10 @@ Graphiques
 
 ## 5. L'impact du niveau économique
 
-Introduction
-
 Dans cette section et pour répondre à la question "Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?", nous allons explorer les données économiques des pays participants aux Jeux Olympiques et analyser leur relation avec les performances sportives. Cette analyse nous permettra de mieux comprendre les dynamiques socio-économiques qui influencent les performances des nations aux Jeux Olympiques et d'identifier les tendances et les corrélations entre le PIB d'un pays et ses résultats sportifs.
 
 </br>
 
-Graphiques
 ```{r Question5-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 # Renommer la première colonne de data_PIB en "Country" pour la jointure
 names(data_PIB)[1] <- "Country"
@@ -660,8 +657,6 @@ Graphiques
 </br><hr /></br>
 
 ## 7. Le physiques des athlètes
-
-Introduction
 
 Pour poursuivre notre analyse des Jeux Olympiques, nous allons nous pencher sur la question suivante : "Comment les caractéristiques physiques des athlètes olympiques varient-elles en fonction de leur âge ?"
 
@@ -890,7 +885,7 @@ ggplot(data_long, aes(
        x = "Sport",
        y = "Ratio des genres",
        fill = "Genres") +
-  scale_fill_manual(values =  c("Hommes" = "lightblue", "Femmes" = "pink")) +
+  scale_fill_manual(values =  c("Hommes" = "cornflowerblue", "Femmes" = "orange")) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5, size = 20)) +
   guides(title = "none")
@@ -907,13 +902,9 @@ Le graphique en barres ci-dessus présente la répartition des femmes par sport 
 
 ## 9. La place des femmes à travers le temps
 
-Introduction
-
 Pour porsuivre notre analyse des Jeux Olympiques, nous allons nous intéresser à la place des femmes à travers le temps. Nous allons explorer l'évolution de la participation des femmes aux Jeux Olympiques, en examinant les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Cette analyse nous permettra de mieux comprendre l'impact des Jeux Olympiques sur l'égal
 
 Cette question vise à explorer l'évolution de la participation des femmes aux Jeux Olympiques, en mettant en lumière les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Nous examinerons la proportion de femmes parmi les athlètes, les médailles remportées par les femmes, et la participation des femmes par pay et par discipline.
-
-
 
 </br>
 
@@ -938,7 +929,7 @@ plot_ly(
   z = ~ ratio,
   text = ~ region,
   colorscale = list(c(0, 0.1, 0.2,  1),
-                    c('yellow', 'white', 'green', 'black')),
+                    c('orange', 'white', 'lightblue', 'navy')),
   autocolorscale = FALSE,
   marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
   colorbar = list(title = 'Ratio H / F')
@@ -953,7 +944,7 @@ plot_ly(
   )
 ```
 
-Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de femmes ayant participé aux Jeux Olympiques. Les couleurs indiquent le ratio, allant du jaune (ratio de femme élevé) au vert foncé (ratio femme faible). Les pays en blanc ontune représentation équilibrée des hommes et des femmes aux Jeux Olympiques. Nous pouvons voir que la plupart des pays ont un ratio entre 3 et 10, ce qui indique une représentation plus masculine aux Jeux Olympiques. Cependre, certains pays ont des ratios très bas, ce qui peut refléter la grande participation des femmes dans ces pays comme la chine avec un ratio de 0.91, l'ukraine 1.17 et angola 1.05. Cette carte met en lumière les disparités dans la représentation des hommes et des femmes aux Jeux Olympiques à travers le monde, soulignant les différences culturelles et sociales dans la participation des athlètes.
+Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de femmes ayant participé aux Jeux Olympiques. Les couleurs indiquent le ratio, allant du orange (ratio de femme élevé) au bleu foncé (ratio femme faible). Les pays en blanc ontune représentation équilibrée des hommes et des femmes aux Jeux Olympiques. Nous pouvons voir que la plupart des pays ont un ratio entre 3 et 10 (voir plus de 10 fois plus d'athlètes homme que de femme envoyés), ce qui indique une représentation plus masculine aux Jeux Olympiques. Cependre, certains pays ont des ratios très bas, ce qui peut refléter la grande participation des femmes dans ces pays comme la chine avec un ratio de 0.91, l'ukraine 1.17 et angola 1.05. Cette carte met en lumière les disparités dans la représentation des hommes et des femmes aux Jeux Olympiques à travers le monde, soulignant les différences culturelles et sociales dans la participation des athlètes.
 
 </br><hr width="20%" /></br>
 
@@ -1013,7 +1004,7 @@ ggplot(medals_by_gender, aes(
        x = "Année",
        y = "Ratio des genres",
        fill = "Genres") +
-  scale_fill_manual(values =  c("M" = "lightgreen", "F" = "yellow")) +
+  scale_fill_manual(values =  c("M" = "cornflowerblue", "F" = "orange")) +
     theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5, size = 20)) +
   guides(title = "none")
@@ -1026,68 +1017,6 @@ Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 
 Nous remarquons que Les athlètes féminins remportent un nombre croissant de médailles. Prenons l'exemple des jeux olympiques 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.Cependant, malgré ces progrès,Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. 
 
 </br><hr width="20%" /></br>
-
-```{r Question9-D, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-
-# Préparer les données des Jeux Olympiques
-data <- data_jo %>%
-  distinct() %>%
-  left_join(data_noc_regions, by = "NOC") %>%
-  group_by(region) %>%
-  summarize(
-    total_athletes = n_distinct(ID),
-    total_female_athletes = n_distinct(ID[Sex == "F"])
-  ) %>%
-  mutate(proportion_female = (total_female_athletes / total_athletes) * 100) %>%
-  ungroup()
-
-# Fusionner les données avec les codes ISO
-female_participation_map <- data %>%
-  left_join(data_iso_regions, by = "region") %>%
-  filter(!is.na(ISO))
-
-# Renommer la colonne pour correspondre à Plotly
-female_participation_map <- female_participation_map %>%
-  rename(iso_alpha = ISO)
-
-# Créer une carte choroplèthe avec Plotly
-map <- plot_ly(
-  data = female_participation_map,
-  type = 'choropleth',
-  locations = ~iso_alpha,
-  z = ~proportion_female,
-  text = ~region,
-  colorscale = list(c(0, 1), c('lightcoral', 'darkred')),
-  zmin = 0, # Échelle minimale
-  zmax = 100, # Échelle maximale
-  autocolorscale = FALSE,
-  reversescale = FALSE,
-  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
-  colorbar = list(title = 'Proportion de participantes féminines (%)', ticksuffix = '%')
-) %>%
-  layout(
-    title = 'Proportion de participation féminine aux Jeux Olympiques par pays',
-    geo = list(
-      showframe = FALSE,
-      showcoastlines = FALSE,
-      projection = list(type = 'Mercator')
-    )
-  )
-
-# Afficher la carte
-map
-
-```
-
-La carte choroplèthe ci-dessus illustre la participation des femmes aux Jeux Olympiques par pays, en mettant en évidence le nombre total de participantes féminines dans chaque pays. La couleur rouge plus foncées indiquent un nombre plus élevé de femmes participant aux Jeux Olympiques, tandis que les couleurs plus claires indiquent un nombre plus faible de participantes.
-
-Il est indéniable que les pays les plus foncés sur la carte notamment les états-Unis qui a envoyé 2315 ainsi que la Chine qui a envoyé 1461 femmes, le Japon avec 1198 femmes, et l'Allemagne en tête de la liste européene avec 1956 femmes aux Jeux olympiques, illustrent un engagement remarquable envers la participation féminine dans le domaine sportif.
-
-En revanche, certains pays plus clairs, tels que quelques pays africains et certains pays d'Asie et d'Amérique du Sud, ont une participation féminine relativement faible aux Jeux Olympiques.
-
-
-</br><hr width="20%" /></br>
-
 
 #### Conclusion :
 
