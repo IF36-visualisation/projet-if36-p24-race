@@ -539,6 +539,8 @@ Graphiques
 
 Introduction
 
+Dans cette section et pour répondre à la question "Existe-t-il une relation entre le niveau économique d'un pays et ses performances aux Jeux Olympiques ?", nous allons explorer les données économiques des pays participants aux Jeux Olympiques et analyser leur relation avec les performances sportives. Cette analyse nous permettra de mieux comprendre les dynamiques socio-économiques qui influencent les performances des nations aux Jeux Olympiques et d'identifier les tendances et les corrélations entre le PIB d'un pays et ses résultats sportifs.
+
 </br>
 
 Graphiques
@@ -578,8 +580,8 @@ data_combined <- data_combined %>%
 # Modifier les étiquettes des tranches de PIB
 labels <- c("<1000", "1000-2000", "2000-3000", "3000-4000", "4000-5000", "5000-6000", "6000-7000", "7000-8000", "8000-9000", ">=9000")
 
-# Créer un box plot avec Plotly
-p <- plot_ly(data_combined, y = ~total_medals, x = ~GDP_bin, type = 'box', boxpoints = 'all',
+# Créer un violin plot avec Plotly
+p <- plot_ly(data_combined, y = ~total_medals, x = ~GDP_bin, type = 'violin', points = 'all',
              jitter = 0.3, pointpos = -1.8, marker = list(color = 'rgba(152, 0, 0, .8)'),
              text = ~paste('Country:', region, '<br>Year:', Year)) %>%
   layout(title = "Distribution des médailles par tranches de PIB par habitant",
@@ -603,29 +605,43 @@ p
 
 ```
 
-Le graphique met en évidence la répartition des médailles remportées aux Jeux Olympiques selon les tranches de PIB par habitant, organisées en déciles. Plusieurs observations et analyses peuvent être tirées de ces données.
+le graphique de violon ci-dessus représente la distribution des médailles par tranches de PIB par habitant.Nous remarquons une distribution asymétrique des médailles, avec une concentration plus élevée dans les tranches de PIB plus élevées(3000-4000, 4000-5000 et 7000-8000).cela suggère l'existance d'une tendance où les tranche de PIB plus élevées ont tendance à remporter plus de médailles aux Jeux Olympiques, les outliers dans presque toutes les tranches de PIB indiquent que les performances sportives ne sont pas uniquement déterminées par le niveau économique d'un pays et qu'il existe des exceptions nitables.
 
-Disparité des Médailles :
-Les tranches de PIB les plus élevées, telles que celles situées entre 777 et 896 USD et entre 896 et 1401 USD, affichent généralement un nombre plus élevé de médailles par rapport aux tranches de PIB plus basses. Par exemple, les pays ayant un PIB par habitant compris entre 777 et 896 USD présentent une diversité plus large de médailles, certains accumulant plus de 80 médailles.
 
-Médianes et Quartiles :
-Les médianes, représentées par les lignes centrales des boîtes (boxplots), restent relativement basses pour toutes les tranches, suggérant que la majorité des pays remportent un nombre modeste de médailles. Les quartiles inférieurs et supérieurs révèlent également que même dans les tranches de PIB les plus élevées, une grande majorité des pays obtiennent un nombre relativement faible de médailles.
-
-Outliers :
-Des points de données sont dispersés au-dessus des boîtes (outliers), notamment dans les tranches de PIB les plus élevées. Ces outliers représentent des pays ayant connu un succès exceptionnel aux Jeux Olympiques malgré un PIB par habitant potentiellement modeste. Les tranches de PIB plus élevées affichent généralement davantage d'outliers, suggérant ainsi une corrélation entre un PIB plus élevé et un succès olympique accru.
-
-Interprétation des Tranches de PIB :
-La distribution suggère une corrélation positive entre un PIB par habitant plus élevé et un succès olympique accru, bien que cette relation ne soit pas linéaire et qu'il existe de nombreuses variations au sein de chaque tranche. Certaines tranches de PIB intermédiaires, telles que celles situées entre 576 et 696 USD, présentent également une dispersion relativement élevée des médailles, indiquant que le PIB n'est pas le seul facteur déterminant le succès olympique.
 
 
 </br><hr width="20%" /></br>
+```{r Question5-B, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Préparer les données pour le scatter plot
+data_combined <- data_combined %>%
+  filter(!is.na(GDP_per_capita), !is.na(total_medals))
 
+# Créer un scatter plot avec une ligne de tendance
+p_scatter <- plot_ly(data_combined, x = ~GDP_per_capita, y = ~total_medals, type = 'scatter', mode = 'markers',
+                     marker = list(color = 'rgba(152, 0, 0, .8)'), text = ~paste('Country:', region, '<br>Year:', Year)) %>%
+  layout(title = "Relation entre le PIB par habitant et le nombre total de médailles",
+         xaxis = list(title = "PIB par habitant (USD)"),
+         yaxis = list(title = "Nombre total de médailles")) %>%
+  add_trace(
+    mode = "lines", 
+    y = fitted(lm(total_medals ~ GDP_per_capita, data = data_combined)), 
+    x = ~GDP_per_capita,
+    line = list(color = 'rgba(0, 0, 255, .8)')
+  )
 
+# Afficher le graphique
+p_scatter
+
+```
+
+Le scatter-plot ci-dessus représente la relation entre le PIB par habitant et le nombre total de médailles remportées par un pays aux Jeux Olympiques.Ce graphique montre une corrélation positive entre ces deux variables, mais cette relation n'est pas linéaire et montre une grande variablité. Nous pouvons ainsi observer que la majorité des points sont concentrés dans la gamme inférieure du PIB par habitant entre 0 et 800 USD avec un un nombre de médailles principalement entre 0 et 20, la faible dispersion des médailles au-délà de 800 USD de PIB par habitant indique que les pays avec un PIB plus élevé ont une plus grande variabilité dans le nombre de médailles remportées, ce qui suggère que le niveau économique d'un pays n'est pas le seul facteur déterminant des performances sportives aux Jeux Olympiques.
 
 </br><hr width="20%" /></br>
 
 
 #### Conclusion :
+
+Pour conclure, notre analyse des données économiques et des performances sportives aux Jeux Olympiques a révélé des tendances intéressantes et des corrélations significatives. Nous avons constaté que les pays avec un PIB par habitant plus élevé ont tendance à remporter plus de médailles, mais cette relation n'est pas linéaire et montre une grande variabilité. Les performances sportives ne sont pas uniquement déterminées par le niveau économique d'un pays, mais peut être influencé par autres facteurs, tels que l'investissement dans le sport, les infrastructures, la culture sportive et les politiques sportives, qui jouent un rôle important dans les résultats aux Jeux Olympiques. Cette analyse souligne l'importance de prendre en compte une variété de facteurs pour comprendre les performances sportives des nations aux Jeux Olympiques et met en lumière les complexités des dynamiques socio-économiques qui influencent les résultats sportifs à l'échelle internationale.
 
 </br><hr /></br>
 
@@ -697,12 +713,11 @@ print(p)
 
 ```
 
-Ce graphique est intéressant car il montre la distribution des médailles olympiques par tranche d'âge. On peut voir que les athlètes de la tranche d'âge 20-30 ans sont les plus représentés parmi les médaillés, suivis par les athlètes de la tranche d'âge 30-40 ans. Cela suggère que la plupart des athlètes médaillés sont dans la fleur de l'âge, ce qui est cohérent avec les exigences physiques et mentales des compétitions olympiques.
+Ce graphique est intéressant car il montre la distribution des médailles olympiques par tranche d'âge. On peut voir que les athlètes de la tranche d'âge 20-30 ans sont les plus représentés parmi les médaillés, suivis par les athlètes de la tranche d'âge 30-40 ans.
 
 Nous remarquons également que le nombre de médailles d'or, d'argent et de bronze est remarquablement proche. Cela suggère une performance sportive équilibrée tout au long des âges. Ainsi, quel que soit le groupe d'âge, les athlètes ont des chances similaires de remporter des médailles, bien que cela puisse être influencé par le nombre d'athlètes dans chaque catégorie.
 
-
-Dans le but d'éviter tout biais lié à la tranche d'âge la plus médaillée, nous allons maintenant examiner la répartition des athlètes olympiques par tranche d'âge pour mieux comprendre la diversité des participants aux Jeux Olympiques et pour vérifier si le grand nombre de médailles dans la tranche d'âge 20-30 ans est dû à une plus grande participation dans cette catégorie ou à des caractéristiques physique spécifiques des athlètes de cette tranche d'âge.
+Dans le but d'éviter tout biais lié à la tranche d'âge la plus médaillée, nous allons maintenant examiner la répartition des athlètes olympiques par tranche d'âge pour vérifier si le grand nombre de médailles dans la tranche d'âge 20-30 ans est dû à une plus grande participation dans cette catégorie ou à des caractéristiques physique spécifiques des athlètes de cette tranche d'âge.
 
 </br><hr width="20%" /></br>
 
@@ -744,7 +759,7 @@ print(p)
 
 ```
 
-Ce graphique montre la répartition des athlètes olympiques par tranche d'âge. On peut voir que la tranche d'âge la plus représentée est celle des 20-30 ans, suivie de près par la tranche d'âge des 30-40 ans. Cela suggère que la majorité des athlètes olympiques se situent dans la tranche d'âge la plus active et la plus performante sur le plan physique. Cela est cohérent avec les exigences physiques et mentales des compétitions olympiques, qui nécessitent souvent un pic de performance et de condition physique.
+Ce graphique montre la répartition des athlètes olympiques par tranche d'âge. On peut voir que la tranche d'âge la plus représentée est celle des 20-30 ans, suivie de près par la tranche d'âge des 30-40 ans.Ce qui fait de ces deux catégorie les plus actives.
 
 Nous constatons que la tranche d'âge 20-30 ans est la plus représentée  à la fois parmi les athlètes olympiques et parmi les médaillés avec un totale de 139 947. Cela suggère que cette tranche d'âge est particulièrement compétitive et performante dans les compétitions olympiques. Cependant, il est important de noter que les athlètes de différentes tranches d'âge ont des chances équilibrées de remporter des médailles, ce qui souligne la diversité et l'équité des Jeux Olympiques en termes de participation et de performances.
 
@@ -787,11 +802,8 @@ plot_ly(medalists, x = ~Height, y = ~Weight, type = 'scatter', mode = 'markers',
 
 </br>
 
-Ce graphique est très important car il montre la relation entre la taille et le poids des athlètes médaillés aux Jeux Olympiques. Chaque point représente un athlète médaillé, avec la couleur indiquant le sport dans lequel il a remporté sa médaille. La ligne noire représente le modèle de régression linéaire ajusté pour la relation entre la taille et le poids des athlètes. 
+Ce graphique est très important car il montre la relation entre la taille et le poids des athlètes médaillés aux Jeux Olympiques. Chaque point représente un athlète médaillé, avec la couleur indiquant le sport dans lequel il a remporté sa médaille.La concentration des points autour de la ligne de régression indique une corrélation positive entre la taille et le poids des athlètes médaillés, en accord avec les besoins physiques de certains sports olympiques favorisant les athlètes plus grands et plus lourds. Néanmoins, la diversité des disciplines permet à des athlètes de tailles et de poids variés de réussir dans des domaines spécifiques.
 
-Nous remarquons que la plupart des points sont regroupés autour de la ligne de régression, ce qui suggère une corrélation positive entre la taille et le poids des athlètes médaillés. Cela est cohérent avec les exigences physiques des sports olympiques, qui peuvent favoriser les athlètes plus grands et plus lourds dans certaines disciplines. Cependant, il est important de noter que la diversité des sports et des disciplines olympiques peut également permettre à des athlètes de différentes tailles et poids de réussir dans des domaines spécifiques.
-
-Les disciplines comme le basketball et le volleyball de plage semblent avoir des athlètes plus grands et plus lourds, tandis que les sports comme la gymnastique ou la course à pied montrent une tendance vers des athlètes plus petits et plus légers. La densité de points montre que la majorité des athlètes se situent entre 160-190 cm de taille et 60-90 kg de poids.
 
 Il y a des outliers avec des athlètes beaucoup plus grands ou plus lourds, indiquant des sports spécifiques avec des exigences physiques uniques (par exemple, le basketball ou le lancer de poids). Il y a une variabilité significative dans la taille et le poids des athlètes au sein de certaines disciplines, ce qui peut refléter des variations de rôles ou de positions spécifiques dans ces sports.
 
@@ -821,14 +833,7 @@ ggplot(medalists, aes(x = Height, y = Weight, color = Sport)) +
 
 </br>
 
-Dans ce graphique de nuage de points, nous examinons la relation entre la taille et le poids des athlètes médaillés dans la natation,Le graphique montre une relation positive claire entre la taille et le poids des athlètes médaillés en natation, comme l'indique la pente ascendante de la ligne de régression. Les points bleus représentant les athlètes montrent que la majorité d'entre eux se situent entre 170-190 cm de taille et 60-90 kg de poids. Cependant, il y a aussi des outliers avec des athlètes beaucoup plus grands ou plus lourds, ce qui peut indiquer des variations individuelles ou des spécialités spécifiques dans la natation. La densité de points montre que la variabilité dans la taille et le poids est moindre en natation comparé à d'autres sports, ce qui peut refléter des exigences physiques plus uniformes pour ce sport.
-
-Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en athlétisme montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. La majorité des athlètes, représentés par des points bruns, se situent entre 170-190 cm de taille et 60-95 kg de poids. Cependant, plusieurs outliers indiquent des athlètes beaucoup plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques au sein de l'athlétisme. La densité de points révèle une variabilité importante dans la taille et le poids des athlètes, soulignant les exigences physiques diversifiées de ce sport. Cette variabilité peut être attribuée aux différentes disciplines d'athlétisme, comme le lancer de poids, le saut ou la course de fond, chacune ayant des exigences physiques uniques.
-
-
-Le graphique analysant la relation entre la taille et le poids des athlètes médaillés en judo montre une corrélation positive, indiquée par la pente ascendante de la ligne de régression. Nous remarquons que le nombre d'athlètes médaillés est inférieur aux sports tels que la natation et l'athlétisme cela est du au fait que le judo est un sport de combat qui se pratique dans des catégories de poids spécifiques, ce qui peut limiter la variabilité de la taille et du poids des athlètes médaillés. Cependant, la relation entre la taille et le poids reste cohérente avec les autres sports, avec une tendance à la corrélation positive entre ces deux variables
-
-La majorité des athlètes, représentés par des points rouges, se situent entre 160-180 cm de taille et 60-90 kg de poids. Cependant, il y a des outliers avec des athlètes plus grands ou plus lourds, reflétant des variations individuelles ou des spécialités spécifiques dans le judo. La densité de points montre une variabilité significative dans la taille et le poids des athlètes, ce qui peut refléter les différentes catégories de poids et les exigences physiques spécifiques du judo. Les variations dans la taille et le poids des athlètes peuvent être stratégiques dans le judo, où la force, l'agilité et l'équilibre sont des éléments clés de la performance.
+Dans ce graphique de nuage de points, nous étudions la relation entre la taille et le poids des athlètes médaillés dans la natation, l'athlétisme et le judo. Dans chaque discipline, nous obserons une corrélation positive entre la taille et le poids, comme le montre la pente ascendante des lignes de régression. En natation, la plupart des athlètes se situent entre 170-190 cm de taille et 60-90 kg de poids, avec quelques outliers. En athlétisme, les athlètes sont également principalement regroupés dans cette plage, mais avec une variabilité plus importante due aux différentes disciplines telles que le lancer de poids, le saut ou la course de fond. En judo, les athlètes sont concentrés entre 160-180 cm de taille et 60-90 kg de poids, en raison des catégories de poids spécifiques de ce sport de combat. Malgré ces spécificités, la corrélation entre la taille et le poids reste cohérente dans les trois disciplines, avec des variations individuelles ou des spécialités spécifiques pouvant influencer les données.
 
 </br><hr width="20%" /></br>
 
@@ -846,195 +851,6 @@ Introduction
 
 Graphiques
 
-</br><hr width="20%" /></br>
-
-#### Conclusion :
-
-</br><hr /></br>
-
-## 9. La place des femmes à travers le temps
-
-Introduction
-
-Pour porsuivre notre analyse des Jeux Olympiques, nous allons nous intéresser à la place des femmes à travers le temps. Nous allons explorer l'évolution de la participation des femmes aux Jeux Olympiques, en examinant les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Cette analyse nous permettra de mieux comprendre l'impact des Jeux Olympiques sur l'égal
-
-Cette question vise à explorer l'évolution de la participation des femmes aux Jeux Olympiques, en mettant en lumière les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Nous examinerons la proportion de femmes parmi les athlètes, les médailles remportées par les femmes, et la participation des femmes par pay et par discipline.
-
-
-
-</br>
-
-```{r Question9-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
-data_filtered <- data_jo %>%
-  distinct() %>%
-  left_join(data_noc_regions, by = "NOC") %>%
-  group_by(region, Sex) %>%
-  summarize(unique_athletes = n_distinct(ID)) %>%
-  ungroup() %>%
-  spread(key = Sex, value = unique_athletes) %>%
-  mutate(F = ifelse(is.na(F), 0, F),
-         M = ifelse(is.na(M), 0, M)) %>%
-  mutate(ratio = M / F) %>%
-  mutate(ratio = pmin(ratio, 10)) %>%
-  left_join(data_iso_regions, by = "region")
-
-plot_ly(
-  data = data_filtered,
-  type = 'choropleth',
-  locations = ~ ISO,
-  z = ~ ratio,
-  text = ~ region,
-  colorscale = list(c(0, 0.1, 0.2,  1),
-                    c('deeppink', 'white', 'blue', 'black')),
-  autocolorscale = FALSE,
-  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
-  colorbar = list(title = 'Ratio H / F')
-) %>%
-  layout(
-    title = 'Ratio homme / femme aux Jeux Olympiques par pays',
-    geo = list(
-      showframe = FALSE,
-      showcoastlines = FALSE,
-      projection = list(type = 'Mercator')
-    )
-  )
-```
-
-Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de femmes ayant participé aux Jeux Olympiques. Les couleurs indiquent le ratio, allant du rose (ratio faible) au bleu (ratio élevé). Les pays en blanc ontune représentation équilibrée des hommes et des femmes aux Jeux Olympiques. Nous pouvons voir que la plupart des pays ont un ratio entre 3 et 10, ce qui indique une représentation plus masculine aux Jeux Olympiques. Cependre, certains pays ont des ratios très bas, ce qui peut refléter la grande participation des femmes dans ces pays comme la chine avec un ratio de 0.91, l'ukraine 1.17 et angola 1.05. Cette carte met en lumière les disparités dans la représentation des hommes et des femmes aux Jeux Olympiques à travers le monde, soulignant les différences culturelles et sociales dans la participation des athlètes.
-
-</br><hr width="20%" /></br>
-
-```{r Question9-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-
-# Filter data for Summer and Winter seasons
-summer_data <- data_jo %>% distinct() %>% filter(Season == "Summer")
-winter_data <- data_jo %>% distinct() %>% filter(Season == "Winter")
-
-# Count unique female athletes for each edition (Games)
-summer_female_count <- summer_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
-winter_female_count <- winter_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
-
-combined_female_data <- bind_rows(
-  mutate(summer_female_count, Season = "Summer"),
-  mutate(winter_female_count, Season = "Winter")
-)
-
-# Calculer la proportion de femmes parmi les athlètes pour chaque édition des Jeux Olympiques
-proportion_femmes <- data_jo %>%
-  group_by(Year) %>%
-  summarise(Proportion_femmes = mean(Sex == "F", na.rm = TRUE))
-
-# Fusionner les données de nombre total de femmes et de proportion de femmes
-data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Year")
-
-# Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
-plot_ly(data_femmes, x = ~Year, y = ~Proportion_femmes,name = "La proportion de femmes ", type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
-  add_trace(y = ~Nombre_femmes, name = "Nombre de femmes ", yaxis = "y2", type = 'scatter', mode = 'lines', line = list(color = 'red')) %>%
-  layout(title = "Evolution de la Participation des femmes aux Jeux Olympiques",
-         xaxis = list(title = "Édition des Jeux Olympiques"),
-         yaxis = list(title = "Proportion de femmes parmi les athlètes", side = "left"),
-         yaxis2 = list(title = "Nombre de femmes", side = "right", overlaying = "y"),
-         hovermode = "closest",
-         showlegend = TRUE,
-         legend = list(x = 0, y = 1, xanchor = "left", yanchor = "top")
-         )
-
-```
-
-Ce graphique interactif illustre l'évolution de la participation féminine aux Jeux Olympiques à travers les années. La ligne bleue représente la proportion de femmes parmi les athlètes, tandis que la ligne rouge indique le nombre total de femmes participant aux Jeux. On constate une augmentation constante de la proportion de femmes au fil des éditions, passant de moins de 10% en 1910 à plus de 40% aujourd'hui. Cette tendance reflète un mouvement positif vers une plus grande représentation des femmes dans le sport et aux Jeux Olympiques. Parallèlement, le nombre absolu de femmes participant a également augmenté, démontrant une croissance globale de la participation féminine, avec environ 5000 athlètes féminines en 2016, et une parité presque totale avec 50% des participants aux Jeux Olympiques de Tokyo 2020 étant des femmes. Cette évolution souligne les progrès significatifs accomplis dans la promotion de l'égalité des sexes dans le domaine sportif.
-
-</br><hr width="20%" /></br>
-
-```{r Question9-C,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-# Filtrer les données pour les médailles et regrouper par année et sexe
-medals_by_gender <- data_jo %>%
-  filter(!is.na(Medal)) %>%
-  group_by(Year, Sex) %>%
-  summarise(total_medals = n(), .groups = 'drop')
-
-ggplot(medals_by_gender, aes(
-  x = Year,
-  y = total_medals,
-  fill  = factor(Sex, levels = c("M", "F"))
-)) +
-  geom_bar(stat = "identity", position = "fill") +
-  labs(title = "Répartition des médailles par genre aux Jeux Olympiques",
-       x = "Année",
-       y = "Ratio des genres",
-       fill = "Genres") +
-  scale_fill_manual(values =  c("M" = "lightblue", "F" = "pink")) +
-    theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
-  guides(title = "none")
-
-
-```
-
-Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres bleues représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres mauves représentent le nombre total de médailles remportées par les athlètes Masculins. En analysant les données, nous pouvons observer les tendances de participation et de succès des athlètes masculins et féminins au cours des différentes éditions des Jeux Olympiques.
-
-Il est intéressant de noter que la participation des femmes aux Jeux Olympiques a considérablement augmenté au fil du temps, reflétant une évolution positive vers une plus grande égalité des genres dans le sport. Les athlètes féminines ont non seulement augmenté en nombre, mais ont également remporté un nombre croissant de médailles, démontrant leur excellence et leur compétitivité dans une variété de disciplines sportives.prenons comme exemple les jeux olympiques de 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, mais en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.
-
-Cependant, malgré ces progrès, des disparités persistent encore dans la répartition des médailles entre les athlètes masculins et féminins. Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques.
-
-</br><hr width="20%" /></br>
-
-```{r Question9-D,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-
-
-
-# Préparer les données des Jeux Olympiques
-data <- data_jo %>%
-  filter(Sex == "F") %>%
-  distinct() %>%
-  left_join(data_noc_regions, by = "NOC") %>%
-  group_by(region) %>%
-  summarize(total_female_athletes = n_distinct(ID)) %>%
-  ungroup()
-
-# Fusionner les données avec les codes ISO
-female_participation_map <- data %>%
-  left_join(data_iso_regions, by = "region") %>%
-  filter(!is.na(ISO))
-
-# Renommer la colonne pour correspondre à Plotly
-female_participation_map <- female_participation_map %>%
-  rename(iso_alpha = ISO)
-
-# Créer une carte choroplèthe avec Plotly
-map <- plot_ly(
-  data = female_participation_map,
-  type = 'choropleth',
-  locations = ~iso_alpha,
-  z = ~total_female_athletes,
-  text = ~region,
-  colorscale = 'Blues',
-  autocolorscale = FALSE,
-  reversescale = TRUE,
-  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
-  colorbar = list(title = 'Nombre de participantes féminines')
-) %>%
-  layout(
-    title = 'Participation féminine aux Jeux Olympiques par pays',
-    geo = list(
-      showframe = FALSE,
-      showcoastlines = FALSE,
-      projection = list(type = 'Mercator')
-    )
-  )
-
-# Afficher la carte
-map
-
-```
-
-La carte choroplèthe ci-dessus illustre la participation des femmes aux Jeux Olympiques par pays, en mettant en évidence le nombre total de participantes féminines dans chaque pays. La couleur bleu plus foncées indiquent un nombre plus élevé de femmes participant aux Jeux Olympiques, tandis que les couleurs plus claires indiquent un nombre plus faible de participantes.
-
-
-Il est indéniable que les pays les plus foncés sur la carte notamment les états-Unis qui a envoyé 2315 ainsi que  la Chine qui a envoyé 1461 femmes, le Japon avec 1198 femmes, et l'Allemagne en tête de la liste européene avec 1956 femmes aux Jeux olympiques, illustrent un engagement remarquable envers la participation féminine dans le domaine sportif. De même, des nations telles que la France, avec 967 femmes, le Canada, avec 1488 femmes, et l'Australie, avec 1141 femmes, témoignent également d'une forte tradition de représentation féminine aux Jeux olympiques. Ces pays ont établi une longue tradition de soutien actif envers les athlètes féminines dans une multitude de disciplines sportives, ce qui se traduit souvent par des succès notables sur le podium. Par exemple, la Chine se distingue comme un pays avec une tradition solidement ancrée de participation féminine aux Jeux olympiques, accompagnée de performances remarquables qui se traduisent par un nombre significatif de médailles remportées par ses athlètes féminines.
-
-En revanche, certains pays plus clairs, tels que les pays africains et certains pays d'Asie et d'Amérique du Sud, ont une participation féminine relativement faible aux Jeux Olympiques. Cela peut être dû à des facteurs socio-culturels, économiques ou politiques qui limitent l'accès des femmes au sport et à la compétition internationale, tels que les inégalités de genre, le manque de ressources et de soutien, ou les restrictions culturelles ainsi que la pauvereté et le manque d'infrastructures sportives.Dans quelques pays cela est dû au problèmes de guerre et de conflits qui limitent la participation en générale et surtout des femmes aux jeux olympiques.Cependant, cela ne signifie en aucun cas que ces pays manquent de potentiel sportif ou qu'ils n'ont jamais envoyé de femmes aux Jeux olympiques. En réalité, plusieurs de ces nations abritent des athlètes féminines exceptionnelles qui ont surmonté d'innombrables obstacles pour représenter fièrement leur pays lors des Jeux olympiques et y remporter des médailles. Prenons par exemple le Maroc, qui a envoyé plus de 50 athlètes féminines aux Jeux olympiques, dont Nawal El Moutawakel, qui a décroché la première médaille d'or olympique pour le Maroc en 1984. Ces réalisations mettent en lumière l'importance cruciale de soutenir et de promouvoir la participation des femmes dans le domaine du sport. C'est un pas significatif vers la réalisation de l'égalité des genres, non seulement aux Jeux olympiques, mais aussi dans l'ensemble du monde sportif. Encourager une représentation équitable et inclusive dans le sport garantit que chaque individu, indépendamment de son genre, ait la possibilité de briller et de contribuer au succès de leur nation.
-
-</br><hr width="20%" /></br>
 
 ```{r Question9-E,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 14, fig.height= 10}
 
@@ -1080,10 +896,199 @@ ggplot(data_long, aes(
   guides(title = "none")
 ```
 
-Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. Chaque barre représente le nombre de femmes participant à un sport spécifique, avec les sports les plus populaires en termes de participation féminine en haut du graphique. Les sports les plus représentés par les femmes incluent l'athlétisme avec 11 666 participantes, la gymnastique avec 9 129 et la natation avec 9 850. Ces disciplines, souvent pratiquées individuellement ou en équipe, attirent un grand nombre de femmes athlètes en raison de leurs exigences physiques et techniques spécifiques. En revanche, des sports comme le hockey sur gazon, le handball, le water-polo, le rugby à sept et le tir à l'arc présentent une participation féminine relativement plus faible, possiblement en raison de divers facteurs tels que la popularité du sport, les opportunités de formation et de compétition, ou les traditions culturelles. Cependant, chaque sport offre des opportunités uniques pour les femmes de s'engager, de compétitionner et de briller aux Jeux Olympiques, reflétant ainsi la diversité et l'inclusivité des disciplines sportives.
+Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. ...
+
+
+</br><hr width="20%" /></br>
 
 #### Conclusion :
 
-En conclusion, notre analyse de la place des femmes aux Jeux Olympiques a mis en lumière l'évolution positive de la participation féminine dans le sport et aux Jeux Olympiques. Nous avons observé une augmentation constante de la proportion de femmes parmi les athlètes, passant de moins de 10% en 1910 à plus de 40% aujourd'hui, ainsi qu'une croissance du nombre absolu de femmes participant aux Jeux. Cette tendance reflète un mouvement vers une plus grande égalité des genres dans le sport et une plus grande représentation des femmes dans les compétitions internationales. Nous avons également constaté des disparités persistantes dans la répartition des médailles entre les athlètes masculins et féminins, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques. Enfin, notre analyse de la participation féminine par pays et par discipline a souligné les différences culturelles, sociales et économiques qui influent sur la représentation des femmes aux Jeux Olympiques, mettant en lumière les progrès accomplis et les défis persistants dans la promotion de l'égalité des genres dans le sport. Encourager une participation équitable et inclusive des femmes dans le sport est essentiel pour garantir que chaque individu, indépendamment de son genre, ait la possibilité de briller et de contribuer au succès de leur nation aux Jeux Olympiques et au-delà.
+</br><hr /></br>
+
+## 9. La place des femmes à travers le temps
+
+Introduction
+
+Pour porsuivre notre analyse des Jeux Olympiques, nous allons nous intéresser à la place des femmes à travers le temps. Nous allons explorer l'évolution de la participation des femmes aux Jeux Olympiques, en examinant les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Cette analyse nous permettra de mieux comprendre l'impact des Jeux Olympiques sur l'égal
+
+Cette question vise à explorer l'évolution de la participation des femmes aux Jeux Olympiques, en mettant en lumière les tendances et les changements observés dans la représentation des femmes dans les différentes disciplines et éditions des Jeux. Nous examinerons la proportion de femmes parmi les athlètes, les médailles remportées par les femmes, et la participation des femmes par pay et par discipline.
 
 
+
+</br>
+
+```{r Question9-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
+data_filtered <- data_jo %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region, Sex) %>%
+  summarize(unique_athletes = n_distinct(ID)) %>%
+  ungroup() %>%
+  spread(key = Sex, value = unique_athletes) %>%
+  mutate(F = ifelse(is.na(F), 0, F),
+         M = ifelse(is.na(M), 0, M)) %>%
+  mutate(ratio = M / F) %>%
+  mutate(ratio = pmin(ratio, 10)) %>%
+  left_join(data_iso_regions, by = "region")
+
+plot_ly(
+  data = data_filtered,
+  type = 'choropleth',
+  locations = ~ ISO,
+  z = ~ ratio,
+  text = ~ region,
+  colorscale = list(c(0, 0.1, 0.2,  1),
+                    c('yellow', 'white', 'green', 'black')),
+  autocolorscale = FALSE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = 'Ratio H / F')
+) %>%
+  layout(
+    title = 'Ratio homme / femme aux Jeux Olympiques par pays',
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+```
+
+Cette carte indique pour chaque pays le ratio entre le nombre d'hommes et de femmes ayant participé aux Jeux Olympiques. Les couleurs indiquent le ratio, allant du jaune (ratio de femme élevé) au vert foncé (ratio femme faible). Les pays en blanc ontune représentation équilibrée des hommes et des femmes aux Jeux Olympiques. Nous pouvons voir que la plupart des pays ont un ratio entre 3 et 10, ce qui indique une représentation plus masculine aux Jeux Olympiques. Cependre, certains pays ont des ratios très bas, ce qui peut refléter la grande participation des femmes dans ces pays comme la chine avec un ratio de 0.91, l'ukraine 1.17 et angola 1.05. Cette carte met en lumière les disparités dans la représentation des hommes et des femmes aux Jeux Olympiques à travers le monde, soulignant les différences culturelles et sociales dans la participation des athlètes.
+
+</br><hr width="20%" /></br>
+
+```{r Question9-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+# Filter data for Summer and Winter seasons
+summer_data <- data_jo %>% distinct() %>% filter(Season == "Summer")
+winter_data <- data_jo %>% distinct() %>% filter(Season == "Winter")
+
+# Count unique female athletes for each edition (Games)
+summer_female_count <- summer_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
+winter_female_count <- winter_data %>% filter(Sex == "F") %>% group_by(Year) %>% summarise(Nombre_femmes = n_distinct(Name))
+
+combined_female_data <- bind_rows(
+  mutate(summer_female_count, Season = "Summer"),
+  mutate(winter_female_count, Season = "Winter")
+)
+
+# Calculer la proportion de femmes parmi les athlètes pour chaque édition des Jeux Olympiques
+proportion_femmes <- data_jo %>%
+  group_by(Year) %>%
+  summarise(Proportion_femmes = mean(Sex == "F", na.rm = TRUE))
+
+# Fusionner les données de nombre total de femmes et de proportion de femmes
+data_femmes <- left_join(summer_female_count, proportion_femmes, by = "Year")
+
+# Créer un graphique en ligne interactif avec Plotly pour visualiser les proportions au fil du temps
+plot_ly(data_femmes, x = ~Year, y = ~Proportion_femmes,name = "La proportion de femmes ", type = 'scatter', mode = 'lines', line = list(color = 'blue')) %>%
+  layout(title = "Evolution de la Participation des femmes aux Jeux Olympiques",
+         xaxis = list(title = "Édition des Jeux Olympiques"),
+         yaxis = list(title = "Proportion de femmes parmi les athlètes", side = "left"),
+         hovermode = "closest",
+         showlegend = TRUE,
+         legend = list(x = 0, y = 1, xanchor = "left", yanchor = "top")
+         )
+
+```
+
+Ce graphique interactif illustre l'évolution de la participation féminine aux Jeux Olympiques à travers les années. La ligne bleue représente la proportion de femmes parmi les athlètes, On constate une augmentation constante de la proportion de femmes au fil des éditions, passant de moins de 10% en 1910 à plus de 45% aujourd'hui. Cette tendance reflète un mouvement positif vers une plus grande représentation des femmes dans le sport et aux Jeux Olympiques avec environ 5000 athlètes féminines en 2016, Cette évolution souligne les progrès significatifs accomplis dans la promotion de l'égalité des sexes dans le domaine sportif.
+
+</br><hr width="20%" /></br>
+
+```{r Question9-C,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Filtrer les données pour les médailles et regrouper par année et sexe
+medals_by_gender <- data_jo %>%
+  filter(!is.na(Medal)) %>%
+  group_by(Year, Sex) %>%
+  summarise(total_medals = n(), .groups = 'drop')
+
+ggplot(medals_by_gender, aes(
+  x = Year,
+  y = total_medals,
+  fill  = factor(Sex, levels = c("M", "F"))
+)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Répartition des médailles par genre aux Jeux Olympiques",
+       x = "Année",
+       y = "Ratio des genres",
+       fill = "Genres") +
+  scale_fill_manual(values =  c("M" = "lightgreen", "F" = "yellow")) +
+    theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
+  guides(title = "none")
+
+
+```
+
+Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres jaunes représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres vertes représentent le nombre total de médailles remportées par les athlètes Masculins. 
+
+Nous remarquons que Les athlètes féminins remportent un nombre croissant de médailles. Prenons l'exemple des jeux olympiques 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.Cependant, malgré ces progrès,Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. 
+
+</br><hr width="20%" /></br>
+
+```{r Question9-D, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+
+# Préparer les données des Jeux Olympiques
+data <- data_jo %>%
+  distinct() %>%
+  left_join(data_noc_regions, by = "NOC") %>%
+  group_by(region) %>%
+  summarize(
+    total_athletes = n_distinct(ID),
+    total_female_athletes = n_distinct(ID[Sex == "F"])
+  ) %>%
+  mutate(proportion_female = (total_female_athletes / total_athletes) * 100) %>%
+  ungroup()
+
+# Fusionner les données avec les codes ISO
+female_participation_map <- data %>%
+  left_join(data_iso_regions, by = "region") %>%
+  filter(!is.na(ISO))
+
+# Renommer la colonne pour correspondre à Plotly
+female_participation_map <- female_participation_map %>%
+  rename(iso_alpha = ISO)
+
+# Créer une carte choroplèthe avec Plotly
+map <- plot_ly(
+  data = female_participation_map,
+  type = 'choropleth',
+  locations = ~iso_alpha,
+  z = ~proportion_female,
+  text = ~region,
+  colorscale = list(c(0, 1), c('lightcoral', 'darkred')),
+  zmin = 0, # Échelle minimale
+  zmax = 100, # Échelle maximale
+  autocolorscale = FALSE,
+  reversescale = FALSE,
+  marker = list(line = list(color = 'rgb(180,180,180)', width = 0.5)),
+  colorbar = list(title = 'Proportion de participantes féminines (%)', ticksuffix = '%')
+) %>%
+  layout(
+    title = 'Proportion de participation féminine aux Jeux Olympiques par pays',
+    geo = list(
+      showframe = FALSE,
+      showcoastlines = FALSE,
+      projection = list(type = 'Mercator')
+    )
+  )
+
+# Afficher la carte
+map
+
+```
+
+La carte choroplèthe ci-dessus illustre la participation des femmes aux Jeux Olympiques par pays, en mettant en évidence le nombre total de participantes féminines dans chaque pays. La couleur rouge plus foncées indiquent un nombre plus élevé de femmes participant aux Jeux Olympiques, tandis que les couleurs plus claires indiquent un nombre plus faible de participantes.
+
+Il est indéniable que les pays les plus foncés sur la carte notamment les états-Unis qui a envoyé 2315 ainsi que la Chine qui a envoyé 1461 femmes, le Japon avec 1198 femmes, et l'Allemagne en tête de la liste européene avec 1956 femmes aux Jeux olympiques, illustrent un engagement remarquable envers la participation féminine dans le domaine sportif.
+
+En revanche, certains pays plus clairs, tels que quelques pays africains et certains pays d'Asie et d'Amérique du Sud, ont une participation féminine relativement faible aux Jeux Olympiques.
+
+
+</br><hr width="20%" /></br>
+
+
+#### Conclusion :
+
+En conclusion, notre analyse de la place des femmes aux Jeux Olympiques a mis en lumière l'évolution positive de la participation féminine dans le sport et aux Jeux Olympiques. Nous avons observé une augmentation constante de la proportion de femmes parmi les athlètes, passant de moins de 10% en 1910 à environ 50% aujourd'hui, ainsi qu'une croissance du nombre absolu de femmes participant aux Jeux. Cette tendance reflète un mouvement vers une plus grande égalité des genres dans le sport et une plus grande représentation des femmes dans les compétitions internationales. Nous avons également constaté des disparités persistantes dans la répartition des médailles entre les athlètes masculins et féminins, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques. Enfin, notre analyse de la participation féminine par pays et par discipline a souligné les différences culturelles, sociales et économiques qui influent sur la représentation des femmes aux Jeux Olympiques, mettant en lumière les progrès accomplis et les défis persistants dans la promotion de l'égalité des genres dans le sport.
