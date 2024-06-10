@@ -62,7 +62,6 @@ ui <- dashboardPage(
       tabItem(tabName = "evolution",
               fluidRow(
                 valueBoxOutput("nb_medailles"),
-                box(title = "Evolution "),
                 box(
                   plotlyOutput('ev')
                 )
