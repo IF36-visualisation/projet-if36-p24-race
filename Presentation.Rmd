@@ -525,14 +525,125 @@ Notre analyse nous a permis de retracer l'évolution des Jeux Olympiques à trav
 
 Introduction
 
+Pour poursuivre notre analyse, nous allons nous concentrer sur la quatrième question : "Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?"
+Cette question vise à déterminer si le pays hôte des Jeux Olympiques bénéficie d'un avantage en termes de participation et de performances sportives, telles que le nombre de médailles accumulées, par rapport aux autres nations participantes. L'objectif est d'analyser si le fait d'accueillir les Jeux Olympiques donne un élan supplémentaire aux athlètes du pays hôte, leur permettant de performer au-dessus de la moyenne par rapport à leurs performances habituelles.
+
+Dans un premier temps nous allons observer l'évolution du nombre de médailles obtenus par les pays hotes à chaque jeu afin de déterminer si on observe des variations durant les années où ces pays reçoivent les jeux. Pour cela nous traçons un diagramme en ligne présentant le nombre de médailles obtenus chaque année par les pays hotes.
+
 </br>
 
 Graphiques
 
+```{r Question4-A,echo=FALSE,Warning =FALSE, message=FALSE,fig.align="center", fig.width = 10}
+# liste des pays hotes
+pays_hote <- read_csv('summer.csv')
+
+#tibble contenant les données sur les médailles obtenus par les pays hotes
+data_pays_hote <- data_jo %>% distinct() %>% left_join(data_noc_regions,by='NOC') %>% right_join(pays_hote,by=c('region'='Pays'),relationship='many-to-many') %>% filter(!is.na(Medal)) %>% select(region,Medal,Year)
+
+#regroupement des valeurs par année et pays
+data_pays_hote <- data_pays_hote %>% group_by(Year,region) %>% summarise(Medal = n())
+```
+```{r Question4-A-2, echo=FALSE, message=FALSE, warning = FALSE,fig.align="center", fig.width = 10}
+p <- ggplot(data = data_pays_hote, aes(x = Year, y = Medal, color = region)) +
+  geom_line() +
+  labs(title = "Evolution du nombre de médailles des pays hotes",
+       x = "Année",
+       y = "Nombre de Médailles",
+       color = "Région") +
+  theme_minimal()
+
+ggplotly(p) %>%
+  layout(
+    title = "Evolution du nombre de médailles des pays hotes",
+    xaxis = list(title = "Année"),
+    yaxis = list(title = "Nombre de Médailles"),
+    legend = list(title = list(text = "Région"), itemsizing = "constant")
+  )
+
+
+```
+
+On constate effectivement des pics de médailles pour les différents pays. C'est le cas de la France où des pics sont observés aux années 1900, 1924 années durant l'accueil le pays a accueilli des jeux. On est en droit de se demander si le fait d'etre un pays hote a eu des influences notamment sur les nombres d'athlètes envoyés.
+On observe donc l'évolution du nombre d'athlètes envoyés par les pays hotes et on se concentre sur les années d'organisation des jeux.
+
 </br><hr width="20%" /></br>
 
-#### Conclusion :
+```{r Question4-C, echo=FALSE,message=FALSE,warning=FALSE, fig.align="center", fig.width = 10}
+data4 <- data_jo %>% 
+  distinct() %>% 
+  left_join(data_noc_regions, by = 'NOC') %>% 
+  right_join(pays_hote, by = c('region' = 'Pays')) %>%
+  filter(!is.na(Medal)) %>%
+  group_by(Year, region) %>%
+  summarise(Medal = n(),
+            nbre_athlete = n_distinct(Name)) %>% mutate(ratio = Medal/nbre_athlete)
 
+p <- ggplot(data = data4, aes(x = Year, y = nbre_athlete, color = region)) +
+  geom_line() +
+  labs(title = "Evolution du nombre d'athlètes envoyés des pays hotes",
+       x = "Année",
+       y = "Nombre d'athlètes",
+       color = "Région") +
+  theme_minimal()
+
+ggplotly(p) %>%
+  layout(
+    title = "Evolution du nombre d'athlètes envoyés des pays hotes",
+    xaxis = list(title = "Année"),
+    yaxis = list(title = "Nombre d'athlètes envoyés"),
+    legend = list(title = list(text = "Région"), itemsizing = "constant")
+  )
+
+```
+```{r echo=FALSE, fig.align="center",warning=FALSE,fig.width = 10}
+ggplot(data = data4, aes(x = nbre_athlete, y = Medal, color = region)) +
+  geom_point() +
+  geom_smooth()+
+  labs(title = "Relation nbre athlètes nbre médailles",
+       x = "nbre athlète",
+       y = "nbre de medailles",
+       color = "Région") +
+  theme_minimal()
+```
+On observe effectivement que le nombre d'athlètes envoyés augmentent pendant les années d'accueil des jeux olympiques. Enfin il serait intéressant de voir si les athlètes ont été plus performants que les autres années en observant le ratio entre le nombre d'athlètes envoyés et le nombre de médailles obtenus.
+
+```{r Question4-B, echo=FALSE,message=FALSE,warning=FALSE, fig.align="center", fig.width = 10}
+#tibble contennt le ratio entre le nombre d'athletes envoyés et le nombre de médailles obtenus
+data4 <- data_jo %>% 
+  distinct() %>% 
+  left_join(data_noc_regions, by = 'NOC') %>% 
+  right_join(pays_hote, by = c('region' = 'Pays')) %>% 
+  filter(!is.na(Medal)) %>%
+  group_by(Year, region) %>%
+  summarise(Medal = n(),
+            nbre_athlete = n_distinct(Name)) %>% mutate(ratio = Medal/nbre_athlete)
+
+
+p <- ggplot(data = data4, aes(x = Year, y = ratio, color = region)) +
+  geom_line() +
+  labs(title = "Evolution du ratio nombre d'athletes envoyés nombre de médailles pour le pays hote",
+       x = "Année",
+       y = "Ratio Athlete/Medaille",
+       color = "Région") +
+  theme_minimal()
+
+ggplotly(p) %>%
+  layout(
+    title = "Evolution du ratio nombre d'athletes envoyés nombre de médailles pour le pays hote",
+    xaxis = list(title = "Année"),
+    yaxis = list(title = "Ratio Athlete/Medaille"),
+    legend = list(title = list(text = "Région"), itemsizing = "constant")
+  )
+
+```
+
+
+</br><hr width="20%" /></br>
+
+###Conclusion :
+
+A la question de savoir "Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?", nous pouvons répondre avec l'affirmatif. En effet à la vue des différents graphes obtenus les pays hotes envoient beaucoup plus d'athlètes durant les années où elles organisent les jeux et obtiennent un très bon ratio de médailles obtenus. La cause serait que les athlètes soient mieux préparer et plus galvaniser par le fait d'accueillir les jeux à domicile.
 </br><hr /></br>
 
 ## 5. L'impact du niveau économique
@@ -646,13 +757,84 @@ Pour conclure, notre analyse des données économiques et des performances sport
 
 Introduction
 
+Pour poursuivre notre analyse, nous allons nous concentrer sur la sixième question : "Quels sont les athlètes qui ont marqué les jeux olympiques"
+Cette question cherche à identifier les athlètes qui ont marqué les Jeux Olympiques par leurs performances exceptionnelles. Le nombre de médailles obtenus et leur longévité au cours de l'histoire des jeux.
+Pour répondre à cette question on détermine les 10 athlètes les plus médaillés des jeux.On se concentre sur ceux ayant obtenu le plus de médailles d'or car on les considère comme ceux ayant eu de meilleurs résultats.
+</br>
+
 </br>
 
 Graphiques
 
+```{r Question6-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+athletes_masc <- data_jo %>%
+  distinct() %>%
+  filter(Sex == 'M' & !is.na(Medal)) %>%
+  group_by(Name, Medal) %>%
+  count() %>% filter(Medal == 'Gold') %>% arrange(desc(n)) %>% head(10)
+
+#athletes_masc
+
+# Filtrer les données pour les athlètes les plus médaillés
+top_athletes <- athletes_masc$Name
+
+# Filtrer les données pour les athlètes les plus médaillés
+athletes_medals <- data_jo %>%
+  distinct() %>%
+  filter(Sex == 'M' & !is.na(Medal) & Name %in% top_athletes)
+
+# Créer le graphique à barres empilées
+ggplot(athletes_medals, aes(x = Name, fill = Medal)) +
+  geom_bar() +
+  labs(title = "Répartition des types de médailles pour les athlètes les plus médaillés",
+       x = "Athlètes",
+       y = "Nombre de médailles") +
+  scale_fill_manual(values = c(
+    "Gold" = "#FFD700",
+    "Silver" = "#C0C0C0",
+    "Bronze" = "#CD7F32"
+  ))+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
 </br><hr width="20%" /></br>
 
+```{r echo=FALSE, warning=FALSE,message=FALSE}
+# meilleur athlète chaque sport
+# Filtrer les athlètes ayant remporté des médailles et calculer le nombre de médailles par type
+athletes_medals_type <- data_jo %>%
+  filter(!is.na(Medal) & (Sport == 'Athletics'| Sport =='Gymnastics')) %>%
+  group_by(Event, Name, Medal) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+# Réorganiser les données pour avoir une colonne pour chaque type de médaille
+athletes_medals_type_wide <- athletes_medals_type %>%
+  pivot_wider(names_from = Medal, values_from = count, values_fill = list(count = 0))
+
+# Calculer le nombre total de médailles et utiliser des critères supplémentaires pour départager
+athletes_medals_ranked <- athletes_medals_type_wide %>%
+  mutate(total_medals = Gold + Silver + Bronze) %>%
+  group_by(Event) %>%
+  arrange(desc(Gold), desc(Silver), desc(Bronze), desc(total_medals)) %>%
+  slice(1) %>%
+  ungroup()
+
+
+```
+</br><hr width="20%" /></br>
+
+Sur le graphique on observe les 10 meilleurs athlètes des jeux olympiques en terme de longévité et du nombre de médailles d'or obtenus, tous s'étant à un moment ou un autre de l'histoire imposé comme icone de sa discipline. Il s'agit de:
+- Usain Bolt: Athlète sprinteur, connu comme leplus rapide de l'histoire et détenant le record du 100 mètres et 200m. Il a remporté 8 médailles d'or olympiques
+- Michel Fred Phelps II: c'est l'atlète le plus décoré de tous les temps avec un total de 28 médailles dont 23 médailles d'or, 3 d'argent et 2 de bronze. C'est un des plus grands athlètes nageurs avec des records dans les épreuves du 100 m papillon et 200 m papillon
+- Raymond Clarence: Athlète américain, spécialiste des sauts en hauteur, saut en longueur et triple saut avec près de 8 médailles d'or olympiques entre 1900 et 1908.
+
+
 #### Conclusion :
+
+De nombreux athlètes ont su marqué l'histoire des jeux de par leur performance incroyable et des records qu'ils détiennent où ont eu à détenir. Ce qui est marquant c'est que tous les athlètes ayant obtenus le plus de médailles sont ceux s'étant présenté le plus de fois aux compétitions et dans les domaines d'athlétisme présentant le plus de variante notamment le saut, la natation ou encore la course. On pourrait se demander quels sont les facteurs à l'origine de leurs performances exceptionnelles?
 
 </br><hr /></br>
 
@@ -846,8 +1028,39 @@ Introduction
 
 Graphiques
 
+```{r Question8-A,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
+# Filtrer les données pour les médailles et regrouper par année et sexe
+medals_by_gender <- data_jo %>%
+  filter(!is.na(Medal)) %>%
+  group_by(Year, Sex) %>%
+  summarise(total_medals = n(), .groups = 'drop')
 
-```{r Question9-E,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 14, fig.height= 10}
+ggplot(medals_by_gender, aes(
+  x = Year,
+  y = total_medals,
+  fill  = factor(Sex, levels = c("M", "F"))
+)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "Répartition des médailles par genre aux Jeux Olympiques",
+       x = "Année",
+       y = "Ratio des genres",
+       fill = "Genres") +
+  scale_fill_manual(values =  c("M" = "cornflowerblue", "F" = "orange")) +
+    theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
+  guides(title = "none")
+
+
+```
+
+Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres jaunes représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres vertes représentent le nombre total de médailles remportées par les athlètes Masculins. 
+
+Nous remarquons que Les athlètes féminins remportent un nombre croissant de médailles. Prenons l'exemple des jeux olympiques 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.Cependant, malgré ces progrès,Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. 
+
+</br><hr width="20%" /></br>
+
+
+```{r Question8-B,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 14, fig.height= 10}
 
 data_females <- data_jo %>%
   filter(Sex == "F")  %>%
@@ -891,12 +1104,13 @@ ggplot(data_long, aes(
   guides(title = "none")
 ```
 
-Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. ...
+Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. On constate que malgré le fait que les femmes sont présentes déja dans de nombreux sports tels que le figure skating, le badminton, le trampoling et le taekwendo, leur participation reste encore très minime sur la majorité des jeux. 
 
 
 </br><hr width="20%" /></br>
 
 #### Conclusion :
+En somme la participation des femmes aux jeux olympiqes bien qu'encore minime, évolue au fil des années et tend à s'éqilibrer avec celui des hommes.
 
 </br><hr /></br>
 
@@ -987,36 +1201,6 @@ Ce graphique interactif illustre l'évolution de la participation féminine aux 
 
 </br><hr width="20%" /></br>
 
-```{r Question9-C,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
-# Filtrer les données pour les médailles et regrouper par année et sexe
-medals_by_gender <- data_jo %>%
-  filter(!is.na(Medal)) %>%
-  group_by(Year, Sex) %>%
-  summarise(total_medals = n(), .groups = 'drop')
-
-ggplot(medals_by_gender, aes(
-  x = Year,
-  y = total_medals,
-  fill  = factor(Sex, levels = c("M", "F"))
-)) +
-  geom_bar(stat = "identity", position = "fill") +
-  labs(title = "Répartition des médailles par genre aux Jeux Olympiques",
-       x = "Année",
-       y = "Ratio des genres",
-       fill = "Genres") +
-  scale_fill_manual(values =  c("M" = "cornflowerblue", "F" = "orange")) +
-    theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 20)) +
-  guides(title = "none")
-
-
-```
-
-Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres jaunes représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres vertes représentent le nombre total de médailles remportées par les athlètes Masculins. 
-
-Nous remarquons que Les athlètes féminins remportent un nombre croissant de médailles. Prenons l'exemple des jeux olympiques 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.Cependant, malgré ces progrès,Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. 
-
-</br><hr width="20%" /></br>
 
 #### Conclusion :
 
