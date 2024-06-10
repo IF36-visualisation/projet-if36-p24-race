@@ -523,8 +523,6 @@ Notre analyse nous a permis de retracer l'évolution des Jeux Olympiques à trav
 
 ## 4. L'impact du pays hôte
 
-Introduction
-
 Pour poursuivre notre analyse, nous allons nous concentrer sur la quatrième question : "Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?"
 Cette question vise à déterminer si le pays hôte des Jeux Olympiques bénéficie d'un avantage en termes de participation et de performances sportives, telles que le nombre de médailles accumulées, par rapport aux autres nations participantes. L'objectif est d'analyser si le fait d'accueillir les Jeux Olympiques donne un élan supplémentaire aux athlètes du pays hôte, leur permettant de performer au-dessus de la moyenne par rapport à leurs performances habituelles.
 
@@ -532,9 +530,7 @@ Dans un premier temps nous allons observer l'évolution du nombre de médailles 
 
 </br>
 
-Graphiques
-
-```{r Question4-A,echo=FALSE,Warning =FALSE, message=FALSE,fig.align="center", fig.width = 10}
+```{r Question4-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 # liste des pays hotes
 pays_hote <- read_csv('summer.csv')
 
@@ -569,7 +565,7 @@ On observe donc l'évolution du nombre d'athlètes envoyés par les pays hotes e
 
 </br><hr width="20%" /></br>
 
-```{r Question4-C, echo=FALSE,message=FALSE,warning=FALSE, fig.align="center", fig.width = 10}
+```{r Question4-C, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 data4 <- data_jo %>% 
   distinct() %>% 
   left_join(data_noc_regions, by = 'NOC') %>% 
@@ -596,7 +592,8 @@ ggplotly(p) %>%
   )
 
 ```
-```{r echo=FALSE, fig.align="center",warning=FALSE,fig.width = 10}
+
+```{r Question4-D, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center",warning=FALSE,fig.width = 10}
 ggplot(data = data4, aes(x = nbre_athlete, y = Medal, color = region)) +
   geom_point() +
   geom_smooth()+
@@ -606,9 +603,10 @@ ggplot(data = data4, aes(x = nbre_athlete, y = Medal, color = region)) +
        color = "Région") +
   theme_minimal()
 ```
+
 On observe effectivement que le nombre d'athlètes envoyés augmentent pendant les années d'accueil des jeux olympiques. Enfin il serait intéressant de voir si les athlètes ont été plus performants que les autres années en observant le ratio entre le nombre d'athlètes envoyés et le nombre de médailles obtenus.
 
-```{r Question4-B, echo=FALSE,message=FALSE,warning=FALSE, fig.align="center", fig.width = 10}
+```{r Question4-B, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 #tibble contennt le ratio entre le nombre d'athletes envoyés et le nombre de médailles obtenus
 data4 <- data_jo %>% 
   distinct() %>% 
@@ -641,9 +639,10 @@ ggplotly(p) %>%
 
 </br><hr width="20%" /></br>
 
-###Conclusion :
+### Conclusion :
 
 A la question de savoir "Est-ce que le pays hôte des Jeux Olympiques bénéficie d'un avantage par rapport aux autres nations participantes ?", nous pouvons répondre avec l'affirmatif. En effet à la vue des différents graphes obtenus les pays hotes envoient beaucoup plus d'athlètes durant les années où elles organisent les jeux et obtiennent un très bon ratio de médailles obtenus. La cause serait que les athlètes soient mieux préparer et plus galvaniser par le fait d'accueillir les jeux à domicile.
+
 </br><hr /></br>
 
 ## 5. L'impact du niveau économique
@@ -715,10 +714,8 @@ p
 
 le graphique de violon ci-dessus représente la distribution des médailles par tranches de PIB par habitant.Nous remarquons une distribution asymétrique des médailles, avec une concentration plus élevée dans les tranches de PIB plus élevées(3000-4000, 4000-5000 et 7000-8000).cela suggère l'existance d'une tendance où les tranche de PIB plus élevées ont tendance à remporter plus de médailles aux Jeux Olympiques, les outliers dans presque toutes les tranches de PIB indiquent que les performances sportives ne sont pas uniquement déterminées par le niveau économique d'un pays et qu'il existe des exceptions nitables.
 
-
-
-
 </br><hr width="20%" /></br>
+
 ```{r Question5-B, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 # Préparer les données pour le scatter plot
 data_combined <- data_combined %>%
@@ -755,16 +752,11 @@ Pour conclure, notre analyse des données économiques et des performances sport
 
 ## 6. Les athlètes dominants
 
-Introduction
-
 Pour poursuivre notre analyse, nous allons nous concentrer sur la sixième question : "Quels sont les athlètes qui ont marqué les jeux olympiques"
 Cette question cherche à identifier les athlètes qui ont marqué les Jeux Olympiques par leurs performances exceptionnelles. Le nombre de médailles obtenus et leur longévité au cours de l'histoire des jeux.
 Pour répondre à cette question on détermine les 10 athlètes les plus médaillés des jeux.On se concentre sur ceux ayant obtenu le plus de médailles d'or car on les considère comme ceux ayant eu de meilleurs résultats.
-</br>
 
 </br>
-
-Graphiques
 
 ```{r Question6-A, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 athletes_masc <- data_jo %>%
@@ -824,13 +816,13 @@ athletes_medals_ranked <- athletes_medals_type_wide %>%
 
 
 ```
-</br><hr width="20%" /></br>
 
 Sur le graphique on observe les 10 meilleurs athlètes des jeux olympiques en terme de longévité et du nombre de médailles d'or obtenus, tous s'étant à un moment ou un autre de l'histoire imposé comme icone de sa discipline. Il s'agit de:
 - Usain Bolt: Athlète sprinteur, connu comme leplus rapide de l'histoire et détenant le record du 100 mètres et 200m. Il a remporté 8 médailles d'or olympiques
 - Michel Fred Phelps II: c'est l'atlète le plus décoré de tous les temps avec un total de 28 médailles dont 23 médailles d'or, 3 d'argent et 2 de bronze. C'est un des plus grands athlètes nageurs avec des records dans les épreuves du 100 m papillon et 200 m papillon
 - Raymond Clarence: Athlète américain, spécialiste des sauts en hauteur, saut en longueur et triple saut avec près de 8 médailles d'or olympiques entre 1900 et 1908.
 
+</br><hr width="20%" /></br>
 
 #### Conclusion :
 
@@ -944,8 +936,6 @@ En revenant à notre question du graphe précédent, nous pouvons maintenant ass
 
 </br><hr width="20%" /></br>
 
-
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
 
 
@@ -984,9 +974,7 @@ Ce graphique est très important car il montre la relation entre la taille et le
 
 Il y a des outliers avec des athlètes beaucoup plus grands ou plus lourds, indiquant des sports spécifiques avec des exigences physiques uniques (par exemple, le basketball ou le lancer de poids). Il y a une variabilité significative dans la taille et le poids des athlètes au sein de certaines disciplines, ce qui peut refléter des variations de rôles ou de positions spécifiques dans ces sports.
 
-
 </br><hr width="20%" /></br>
-
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 9}
 
@@ -1022,11 +1010,12 @@ Pour conclure, notre analyse nous a permis de visualiser le nombre de médailles
 
 ## 8. La répartition homme / femme
 
-Introduction
+Pour continuer notre analyse, nous allons nous concentrer sur la question suivante : "Comment a évolué le ratio homme/femme parmi les athlètes participant aux Jeux Olympiques au fil du temps ?"
+
+Cette question vise à explorer l'évolution de la parité hommes-femmes dans le cadre des Jeux Olympiques. En examinant les données historiques, nous analyserons les tendances dans l'équilibre entre les athlètes masculins et féminins au fil des différentes éditions des Jeux. Cette analyse nous permettra de comprendre les facteurs ayant influencé ces changements, en montrant comment l'évolution des Jeux a reflété et parfois même accéléré les dynamiques sociales et culturelles concernant l'égalité des sexes dans le sport international.
 
 </br>
 
-Graphiques
 
 ```{r Question8-A,echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", fig.width = 10}
 # Filtrer les données pour les médailles et regrouper par année et sexe
@@ -1053,9 +1042,9 @@ ggplot(medals_by_gender, aes(
 
 ```
 
-Le bare-chart ci-dessus illustre la répartition des médailles par genre entre 1896 et 2016 aux Jeux Olympiques. Les barres jaunes représentent le nombre total de médailles remportées par les athlètes féminins, tandis que les barres vertes représentent le nombre total de médailles remportées par les athlètes Masculins. 
+Le diagramme en barres ci-dessus illustre la répartition des médailles obtenues par genre entre 1896 et 2016 aux Jeux Olympiques. Nous remarquons assez facilement que les athlètes féminines remportent un nombre croissant de médailles d'année en année. Prenons l'exemple des Jeux Olympiques de 1900 à Paris : les femmes ont remporté un total de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio, les femmes ont remporté 969 médailles contre 1054 pour les hommes.
 
-Nous remarquons que Les athlètes féminins remportent un nombre croissant de médailles. Prenons l'exemple des jeux olympiques 1900 à Paris les femmes ont remporté un totale de 13 médailles contre 591 pour les hommes, tandis qu'en 2016 à Rio les femmes ont remporté 969 médailles contre 1054 pour les hommes.Ce qui montre une évolution positive de la participation des femmes aux jeux olympiques.Cependant, malgré ces progrès,Les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps. 
+Cette évolution est due en grande partie à la participation croissante des femmes aux Jeux Olympiques, comme nous allons le voir à la question 9. Cependant, malgré ces progrès, les hommes continuent de remporter un nombre plus élevé de médailles que les femmes dans de nombreuses éditions des Jeux Olympiques, bien que l'écart se soit réduit au fil du temps.
 
 </br><hr width="20%" /></br>
 
@@ -1104,13 +1093,14 @@ ggplot(data_long, aes(
   guides(title = "none")
 ```
 
-Le graphique en barres ci-dessus présente la répartition des femmes par sport aux Jeux Olympiques. On constate que malgré le fait que les femmes sont présentes déja dans de nombreux sports tels que le figure skating, le badminton, le trampoling et le taekwendo, leur participation reste encore très minime sur la majorité des jeux. 
+Ce graphique en barres présente la répartition des femmes par sport aux Jeux Olympiques. On constate que, bien que les femmes soient présentes dans tous les sports, le ratio de participation n'est pas égal dans tous les sports. Il est intéressant de remarquer que les femmes sont mieux représentées dans les sports catégorisés comme artistiques : patinage artistique, gymnastique, trampoline, plongeon... alors qu'elles sont moins présentes dans les sports de combat : boxe, lutte, escrime...
 
+Il est important de noter que ce graphique est biaisé par le fait que les sports qui existent depuis longtemps ont une participation féminine plus faible, car à l'époque, il y avait moins de femmes participantes (voir Question 9). Cette disparité historique influence encore aujourd'hui la répartition des médailles et la participation par genre dans ces disciplines.
 
 </br><hr width="20%" /></br>
 
 #### Conclusion :
-En somme la participation des femmes aux jeux olympiqes bien qu'encore minime, évolue au fil des années et tend à s'éqilibrer avec celui des hommes.
+En conclusion, l'analyse révèle des progrès significatifs vers l'égalité des genres aux Jeux Olympiques. Les athlètes féminines remportent un nombre croissant de médailles d'année en année, reflet de leur participation accrue. Cependant, des disparités subsistent, notamment dans les sports de combat où les femmes sont moins présentes que dans les sports artistiques. Bien que les hommes continuent de remporter plus de médailles, l'écart se réduit avec le temps. Ces tendances montrent une avancée vers une plus grande parité, influencée par des dynamiques historiques et culturelles.
 
 </br><hr /></br>
 
@@ -1205,3 +1195,63 @@ Ce graphique interactif illustre l'évolution de la participation féminine aux 
 #### Conclusion :
 
 En conclusion, notre analyse de la place des femmes aux Jeux Olympiques a mis en lumière l'évolution positive de la participation féminine dans le sport et aux Jeux Olympiques. Nous avons observé une augmentation constante de la proportion de femmes parmi les athlètes, passant de moins de 10% en 1910 à environ 50% aujourd'hui, ainsi qu'une croissance du nombre absolu de femmes participant aux Jeux. Cette tendance reflète un mouvement vers une plus grande égalité des genres dans le sport et une plus grande représentation des femmes dans les compétitions internationales. Nous avons également constaté des disparités persistantes dans la répartition des médailles entre les athlètes masculins et féminins, bien que l'écart se soit réduit au fil du temps. Ces disparités peuvent être attribuées à divers facteurs, tels que le nombre de femmes participant à certains sports, les opportunités de formation et de financement, ainsi que le nombre de pays qui envoient des athlètes féminines aux Jeux Olympiques. Enfin, notre analyse de la participation féminine par pays et par discipline a souligné les différences culturelles, sociales et économiques qui influent sur la représentation des femmes aux Jeux Olympiques, mettant en lumière les progrès accomplis et les défis persistants dans la promotion de l'égalité des genres dans le sport.
+
+</br></br><hr /></br></br>
+
+# Conclusion du rapport
+
+### Résumé
+
+Après avoir réalisé une analyse des Jeux Olympiques, cinq points clés émergent, mettant en lumière la dynamique complexe de cet événement :  
+
+- Domination des Pays  
+L'analyse révèle que les pays dominants aux Jeux Olympiques sont principalement situés en Amérique du Nord et en Europe, avec des nations riches comme la Chine, l'Australie et le Brésil se distinguant également. La majorité des pays ont peu de médailles, tandis qu'une minorité en a un grand nombre.
+
+- Impact du Pays Hôte  
+Le pays hôte des Jeux Olympiques bénéficie d'un avantage significatif. Les données montrent que les pays organisateurs envoient plus d'athlètes et obtiennent un meilleur ratio de médailles par athlète envoyé. Cet avantage est attribué à une meilleure préparation et à la motivation supplémentaire de concourir à domicile.
+
+- Niveau Économique et Performances  
+Il existe une corrélation positive entre le PIB par habitant et le nombre de médailles remportées. Cependant, cette relation n'est pas linéaire et montre une grande variabilité, indiquant que d'autres facteurs, tels que l'investissement dans le sport, les infrastructures et les politiques sportives, influencent également les performances olympiques.
+
+- Participation Féminine  
+La participation des femmes aux Jeux Olympiques a considérablement augmenté, passant de moins de 10 % en 1910 à environ 50 % aujourd'hui. Bien que des disparités persistent, notamment dans les sports de combat, l'écart entre les médailles remportées par les hommes et les femmes se réduit progressivement, reflétant des progrès vers une plus grande égalité des genres.
+
+- Athlètes Marquants  
+Le rapport identifie les athlètes ayant marqué les Jeux Olympiques par leurs performances exceptionnelles, comme Usain Bolt et Michael Phelps. Les athlètes les plus médaillés sont ceux ayant participé le plus souvent aux compétitions et dans des disciplines avec de nombreuses variantes, telles que la natation et l'athlétisme.
+
+
+En conclusion, ce rapport montre que les Jeux Olympiques suivent une évolution positive en termes de participation, performances et égalité des genres. Les pays hôtes et ceux avec un PIB plus élevé tendent à performer mieux, mais de nombreux autres facteurs contribuent aux résultats sportifs. Ce rapport souligne le fait que des dynamiques complexes influençent les performances olympiques et les progrès réalisés en matière d'égalité des genres dans le sport.
+
+</br>
+
+### Retour personels
+
+ - Thomas François :
+Ce projet a été très intéressant du point de vue de l'apprentissage de R et des outils associés (Shiny, ggplot...) car il a été motivé par le fait de découvrir le sujet intéressant des Jeux Olympiques. Il aurait été intéressant d'analyser l'évolution des records (ils n'étaient pas présents dans ce dataset) afin de se rendre compte des sports où les progrès sont importants, quelle est la moyenne des nouveaux records du monde, etc.
+
+ - Mohamed Amine Jabote :
+""
+
+ - Freddy Durel Pouna Wantou :
+""
+
+</br><hr /></br>
+
+# Annexe
+
+Travail personnel des membres du groupe:
+
+ - Thomas François :
+    - Questions 1 / 2 / 3 / 8
+    - Relectures, corrections et améliorations des graphiques
+    - Mise en page
+    - Présentation (slides)
+
+ - Mohamed Amine Jabote :
+    - Introduction
+    - Réalisations Tableau
+    - Questions 5 / 7 / 9
+
+ - Freddy Durel Pouna Wantou
+    - Dashboard Shiny
+    - Questions 4 / 6
