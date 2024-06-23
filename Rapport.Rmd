@@ -1306,6 +1306,20 @@ Ce projet est l'un des projets les plus intéressants que j'ai réalisé jusqu'�
 
 </br><hr /></br>
 
+
+# Shiny dashboard
+<p align="center">
+<img src="img1.png" width="80%"/>
+</p>
+
+<p align="center">
+<img src="img2.png" width="80%"/>
+</p>
+
+<p align="center">
+<img src="img3.png" width="80%"/>
+</p>
+
 # Annexe
 
 Travail personnel des membres du groupe:
