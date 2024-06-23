@@ -1299,10 +1299,10 @@ En conclusion, ce rapport montre que les Jeux Olympiques suivent une évolution 
 Ce projet a été très intéressant du point de vue de l'apprentissage de R et des outils associés (Shiny, ggplot...) car il a été motivé par le fait de découvrir le sujet intéressant des Jeux Olympiques. Il aurait été intéressant d'analyser l'évolution des records (ils n'étaient pas présents dans ce dataset) afin de se rendre compte des sports où les progrès sont importants, quelle est la moyenne des nouveaux records du monde, etc.
 
  - Mohamed Amine Jabote :
-""
+Le projrt de l'ue IF36 a été une expérience enrichissante pour moi. J'ai pu découvrir de nouvelles fonctionnalités de R et de ggplot2, ainsi que l'utilisation de Shiny pour créer des tableaux de bord interactifs. J'ai également apprécié l'analyse des données des Jeux Olympiques, qui m'a permis de mieux comprendre les tendances et les dynamiques des performances sportives à l'échelle internationale ce qui peut aussi bénéfique pour ma culture générale.
 
  - Freddy Durel Pouna Wantou :
-""
+Ce projet est l'un des projets les plus intéressants que j'ai réalisé jusqu'à présent. Il m'a permis de découvrir de nouvelles fonctionnalités de R et de ggplot2, ainsi que l'utilisation de Shiny pour créer des tableaux de bord interactifs. J'ai également apprécié l'analyse des données des Jeux Olympiques, qui m'a permis de mieux comprendre les tendances et les dynamiques des performances sportives à l'échelle internationale.
 
 </br><hr /></br>
 
