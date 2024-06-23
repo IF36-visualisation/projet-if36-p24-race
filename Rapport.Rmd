@@ -1299,7 +1299,7 @@ En conclusion, ce rapport montre que les Jeux Olympiques suivent une évolution 
 Ce projet a été très intéressant du point de vue de l'apprentissage de R et des outils associés (Shiny, ggplot...) car il a été motivé par le fait de découvrir le sujet intéressant des Jeux Olympiques. Il aurait été intéressant d'analyser l'évolution des records (ils n'étaient pas présents dans ce dataset) afin de se rendre compte des sports où les progrès sont importants, quelle est la moyenne des nouveaux records du monde, etc.
 
  - Mohamed Amine Jabote :
-Le projrt de l'ue IF36 a été une expérience enrichissante pour moi. J'ai pu découvrir de nouvelles fonctionnalités de R et de ggplot2, ainsi que l'utilisation de Shiny pour créer des tableaux de bord interactifs. J'ai également apprécié l'analyse des données des Jeux Olympiques, qui m'a permis de mieux comprendre les tendances et les dynamiques des performances sportives à l'échelle internationale ce qui peut aussi bénéfique pour ma culture générale.
+Le projet a été une expérience enrichissante pour moi. J'ai pu découvrir de nouvelles fonctionnalités de R et de ggplot2, ainsi que l'utilisation de Shiny pour créer des tableaux de bord interactifs. J'ai également apprécié l'analyse des données des Jeux Olympiques, qui m'a permis de mieux comprendre les tendances et les dynamiques des performances sportives à l'échelle internationale ce qui peut aussi bénéfique pour ma culture générale.
 
  - Freddy Durel Pouna Wantou :
 Ce projet est l'un des projets les plus intéressants que j'ai réalisé jusqu'à présent. Il m'a permis de découvrir de nouvelles fonctionnalités de R et de ggplot2, ainsi que l'utilisation de Shiny pour créer des tableaux de bord interactifs. J'ai également apprécié l'analyse des données des Jeux Olympiques, qui m'a permis de mieux comprendre les tendances et les dynamiques des performances sportives à l'échelle internationale.
@@ -1307,7 +1307,10 @@ Ce projet est l'un des projets les plus intéressants que j'ai réalisé jusqu'�
 </br><hr /></br>
 
 
-# Shiny dashboard
+# Shiny dashboard : 
+
+Dans cette partie nous avons essayé de mettre en place un dashboard interactif pour visualiser les données des Jeux Olympiques, en recréant des graphiques présent dans notre rapport mais en utilisant Shiny. Nous avons utilisé le package Shiny pour créer une application web qui permet d'explorer les données de manière interactive. Le dashboard comprend plusieurs onglets, chacun présentant des graphiques et des analyses des données des Jeux Olympiques. Les utilisateurs peuvent sélectionner les pays et les types de médailles à afficher. Le dashboard permet également de comparer les performances etles médailles par pays, les tendances de participation et les ratios hommes-femmes aux Jeux Olympiques. Voici un aperçu du dashboard interactif :
+
 <p align="center">
 <img src="img1.png" width="80%"/>
 </p>
@@ -1332,9 +1335,10 @@ Travail personnel des membres du groupe:
 
  - Mohamed Amine Jabote :
     - Introduction
+    - corrections et améliorations des graphiques
     - Réalisations Tableau
-    - Questions 5 / 7 / 9
+    - Questions 5 / 7 / 8 / 9
 
  - Freddy Durel Pouna Wantou
     - Dashboard Shiny
-    - Questions 4 / 6
+    - Questions 4 / 6 / 8
